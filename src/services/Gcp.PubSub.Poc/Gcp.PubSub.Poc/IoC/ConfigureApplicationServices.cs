@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Redis.Poc.Services;
 
 namespace Redis.Poc.IoC
 {
@@ -9,6 +10,7 @@ namespace Redis.Poc.IoC
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddScoped<IProducerService, ProducerService>();
 
             return services;
         }
