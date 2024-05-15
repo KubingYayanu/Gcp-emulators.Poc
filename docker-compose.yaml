@@ -1,0 +1,19 @@
+services:
+  gcp-emulators:
+    image: gcp-emulators:475.0.0-emulators
+    build:
+      context: ./src
+      dockerfile: infra/gcp-emulators/Dockerfile
+    restart: always
+    command: >
+      bash -c "gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:8085'"
+    networks:
+      default:
+    expose:
+      - 8085
+    ports:
+      - 8085:8085
+
+networks:
+  default:
+    name: gcp-emulators-poc_default
