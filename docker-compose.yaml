@@ -7,12 +7,19 @@ services:
     restart: always
     command: >
       bash -c "gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:8085'"
+    volumes:
+      - gcp-emulators-config:/config
+      - gcp-emulators-certs:/certs
     networks:
       default:
     expose:
       - 8085
     ports:
       - 8085:8085
+
+volumes:
+  gcp-emulators-config:
+  gcp-emulators-certs:
 
 networks:
   default:
