@@ -1,6 +1,7 @@
 using Gcp.PubSub.Poc.Helpers;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Gcp.PubSub.Poc.Consumer.Services
@@ -9,13 +10,16 @@ namespace Gcp.PubSub.Poc.Consumer.Services
     {
         private readonly IPubSubResourceHelper _pubSubResourceHelper;
         private readonly PubSubOptions _options;
+        private readonly ILogger<ConsumerService> _logger;
 
         public ConsumerService(
             IPubSubResourceHelper pubSubResourceHelper,
-            IOptions<PubSubOptions> options)
+            IOptions<PubSubOptions> options,
+            ILogger<ConsumerService> logger)
         {
             _pubSubResourceHelper = pubSubResourceHelper;
             _options = options.Value;
+            _logger = logger;
         }
 
         public async Task PullMessagesAsync()
@@ -46,8 +50,8 @@ namespace Gcp.PubSub.Poc.Consumer.Services
             await subscriber.StartAsync((msg, cancellationToken) =>
             {
                 receivedMessages.Add(msg);
-                Console.WriteLine($"Received message {msg.MessageId} published at {msg.PublishTime.ToDateTime()}");
-                Console.WriteLine($"Text: '{msg.Data.ToStringUtf8()}'");
+                _logger.LogInformation($"Received message {msg.MessageId} published at {msg.PublishTime.ToDateTime()}");
+                _logger.LogInformation($"Text: '{msg.Data.ToStringUtf8()}'");
 
                 subscriber.StopAsync(TimeSpan.FromSeconds(15));
 

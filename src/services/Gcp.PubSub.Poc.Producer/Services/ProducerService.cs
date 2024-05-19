@@ -1,6 +1,7 @@
 ﻿using Gcp.PubSub.Poc.Helpers;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Gcp.PubSub.Poc.Producer.Services
@@ -9,13 +10,16 @@ namespace Gcp.PubSub.Poc.Producer.Services
     {
         private readonly IPubSubResourceHelper _pubSubResourceHelper;
         private readonly PubSubOptions _options;
+        private readonly ILogger<ProducerService> _logger;
 
         public ProducerService(
             IPubSubResourceHelper pubSubResourceHelper,
-            IOptions<PubSubOptions> options)
+            IOptions<PubSubOptions> options,
+            ILogger<ProducerService> logger)
         {
             _pubSubResourceHelper = pubSubResourceHelper;
             _options = options.Value;
+            _logger = logger;
         }
 
         public async Task PublishMessagesAsync()
@@ -34,7 +38,7 @@ namespace Gcp.PubSub.Poc.Producer.Services
                 topicId: topicId,
                 subscriptionId: subscriptionId);
             var subscriptionName = subscription.SubscriptionName;
-            
+
             // Publisher manage
             var publisher = await new PublisherClientBuilder
             {
@@ -43,6 +47,8 @@ namespace Gcp.PubSub.Poc.Producer.Services
             }.BuildAsync();
 
             await publisher.PublishAsync("Hello, Pubsub");
+            _logger.LogInformation("Hello, Pubsub");
+
             await publisher.ShutdownAsync(TimeSpan.FromSeconds(15));
         }
     }
