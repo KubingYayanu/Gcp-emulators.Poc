@@ -26,7 +26,7 @@ namespace Gcp.PubSub.Poc.Consumer.Services
             ? EmulatorDetection.EmulatorOnly
             : EmulatorDetection.ProductionOnly;
 
-        public async Task PullMessagesAsync()
+        private async Task<SubscriberClient> CreateSubscriberAsync(CancellationToken cancellationToken)
         {
             var projectId = _options.ProjectId;
             var topicId = _options.TopicId;
@@ -48,16 +48,27 @@ namespace Gcp.PubSub.Poc.Consumer.Services
             {
                 SubscriptionName = subscriptionName,
                 EmulatorDetection = EmulatorDetection
-            }.BuildAsync();
+            }.BuildAsync(cancellationToken);
+
+            return subscriber;
+        }
+
+        public async Task PullMessagesAsync(CancellationToken cancellationToken = default)
+        {
+            var subscriber = await CreateSubscriberAsync(cancellationToken);
             var receivedMessages = new List<PubsubMessage>();
+
+            cancellationToken.Register(async () =>
+            {
+                _logger.LogInformation("Cancellation requested, stopping subscriber...");
+                await subscriber.StopAsync(CancellationToken.None); // Provide a token that doesn't cancel
+            });
 
             await subscriber.StartAsync((msg, cancellationToken) =>
             {
                 receivedMessages.Add(msg);
                 _logger.LogInformation($"Received message {msg.MessageId} published at {msg.PublishTime.ToDateTime()}");
                 _logger.LogInformation($"Text: '{msg.Data.ToStringUtf8()}'");
-
-                subscriber.StopAsync(TimeSpan.FromSeconds(15));
 
                 return Task.FromResult(SubscriberClient.Reply.Ack);
             });

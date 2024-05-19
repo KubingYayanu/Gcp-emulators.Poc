@@ -12,9 +12,32 @@ namespace Gcp.PubSub.Poc.Consumer
     {
         static async Task Main(string[] args)
         {
+            var cts = new CancellationTokenSource();
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                Console.WriteLine("Cancellation requested...");
+                cts.Cancel();
+                eventArgs.Cancel = true; // 防止程序立即終止 
+            };
+
             var host = CreateHostBuilder(args).Build();
+
             var consumer = host.Services.GetRequiredService<IConsumerService>();
-            await consumer.PullMessagesAsync();
+            await consumer.PullMessagesAsync(cts.Token);
+
+            try
+            {
+                await host.RunAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Host run cancelled.");
+            }
+            finally
+            {
+                Console.WriteLine("Host shutting down...");
+                await host.StopAsync(cts.Token);
+            }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
