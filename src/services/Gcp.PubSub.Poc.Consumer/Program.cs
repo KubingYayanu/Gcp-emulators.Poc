@@ -1,20 +1,20 @@
-﻿using Gcp.PubSub.Poc.IoC;
-using Gcp.PubSub.Poc.Producer.IoC;
-using Gcp.PubSub.Poc.Producer.Services;
+﻿using Gcp.PubSub.Poc.Consumer.IoC;
+using Gcp.PubSub.Poc.Consumer.Services;
+using Gcp.PubSub.Poc.IoC;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Gcp.PubSub.Poc.Producer
+namespace Gcp.PubSub.Poc.Consumer
 {
     internal class Program
     {
         static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            var producer = host.Services.GetRequiredService<IProducerService>();
-            await producer.PublishMessagesAsync();
+            var consumer = host.Services.GetRequiredService<IConsumerService>();
+            await consumer.PullMessagesAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)

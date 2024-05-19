@@ -2,6 +2,6 @@
 {
     public interface IProducerService
     {
-        Task Run();
+        Task PublishMessagesAsync();
     }
 }

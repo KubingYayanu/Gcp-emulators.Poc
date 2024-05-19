@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gcp.PubSub.Poc.Producer", "src\services\Gcp.PubSub.Poc.Producer\Gcp.PubSub.Poc.Producer.csproj", "{157CA439-1940-4853-8E6C-BD218C759938}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gcp.PubSub.Poc", "src\services\Gcp.PubSub.Poc\Gcp.PubSub.Poc.csproj", "{3C2827EB-06C8-4E69-A38A-DBFC2F999B0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gcp.PubSub.Poc.Consumer", "src\services\Gcp.PubSub.Poc.Consumer\Gcp.PubSub.Poc.Consumer.csproj", "{941F7C27-A804-4529-8440-8A49EAA8E7BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{157CA439-1940-4853-8E6C-BD218C759938}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{157CA439-1940-4853-8E6C-BD218C759938}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{157CA439-1940-4853-8E6C-BD218C759938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C2827EB-06C8-4E69-A38A-DBFC2F999B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C2827EB-06C8-4E69-A38A-DBFC2F999B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C2827EB-06C8-4E69-A38A-DBFC2F999B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C2827EB-06C8-4E69-A38A-DBFC2F999B0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{941F7C27-A804-4529-8440-8A49EAA8E7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{941F7C27-A804-4529-8440-8A49EAA8E7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{941F7C27-A804-4529-8440-8A49EAA8E7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{941F7C27-A804-4529-8440-8A49EAA8E7BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,16 +1,16 @@
-﻿using Gcp.PubSub.Poc.Helpers;
+using Gcp.PubSub.Poc.Helpers;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Producer.Services
+namespace Gcp.PubSub.Poc.Consumer.Services
 {
-    public class ProducerService : IProducerService
+    public class ConsumerService : IConsumerService
     {
         private readonly IPubSubResourceHelper _pubSubResourceHelper;
         private readonly PubSubOptions _options;
 
-        public ProducerService(
+        public ConsumerService(
             IPubSubResourceHelper pubSubResourceHelper,
             IOptions<PubSubOptions> options)
         {
@@ -18,7 +18,7 @@ namespace Gcp.PubSub.Poc.Producer.Services
             _options = options.Value;
         }
 
-        public async Task PublishMessagesAsync()
+        public async Task PullMessagesAsync()
         {
             var projectId = _options.ProjectId;
             var topicId = _options.TopicId;
@@ -35,16 +35,24 @@ namespace Gcp.PubSub.Poc.Producer.Services
                 subscriptionId: subscriptionId);
             var subscriptionName = subscription.SubscriptionName;
 
-
-            // Publisher manage
-            var publisher = await new PublisherClientBuilder
+            // Subscriber manage
+            var subscriber = await new SubscriberClientBuilder
             {
-                TopicName = topicName,
+                SubscriptionName = subscriptionName,
                 EmulatorDetection = EmulatorDetection.EmulatorOnly
             }.BuildAsync();
+            var receivedMessages = new List<PubsubMessage>();
 
-            await publisher.PublishAsync("Hello, Pubsub");
-            await publisher.ShutdownAsync(TimeSpan.FromSeconds(15));
+            await subscriber.StartAsync((msg, cancellationToken) =>
+            {
+                receivedMessages.Add(msg);
+                Console.WriteLine($"Received message {msg.MessageId} published at {msg.PublishTime.ToDateTime()}");
+                Console.WriteLine($"Text: '{msg.Data.ToStringUtf8()}'");
+
+                subscriber.StopAsync(TimeSpan.FromSeconds(15));
+
+                return Task.FromResult(SubscriberClient.Reply.Ack);
+            });
         }
     }
 }
