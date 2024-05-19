@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Gcp.PubSub.Poc.Consumer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "PUBSUB_EMULATOR_HOST": "localhost:8085",
+        "PUBSUB_PROJECT_ID": "lets-have-some-fun"
+      }
+    }
+  }
+}
