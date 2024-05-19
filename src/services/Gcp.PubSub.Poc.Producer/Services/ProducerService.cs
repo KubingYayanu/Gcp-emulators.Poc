@@ -34,8 +34,7 @@ namespace Gcp.PubSub.Poc.Producer.Services
                 topicId: topicId,
                 subscriptionId: subscriptionId);
             var subscriptionName = subscription.SubscriptionName;
-
-
+            
             // Publisher manage
             var publisher = await new PublisherClientBuilder
             {
