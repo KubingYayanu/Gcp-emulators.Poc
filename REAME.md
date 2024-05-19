@@ -17,10 +17,10 @@ $ docker compose -f docker-compose.yaml -p gcp-emulators-poc up -d --build
 
 ```bash
 # 查詢所有 Topics
-$ curl GET "http://localhost:8085/v1/projects/lets-have-some-fun/topics"
+$ curl "http://localhost:8085/v1/projects/lets-have-some-fun/topics"
 
 # 查詢指定 Topic 是否存在
-$ curl GET "http://localhost:8085/v1/projects/lets-have-some-fun/topics/something-go-wrong"
+$ curl "http://localhost:8085/v1/projects/lets-have-some-fun/topics/something-go-wrong"
 ```
 
 ## Subscriptions
