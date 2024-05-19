@@ -1,6 +1,7 @@
 ﻿using Gcp.PubSub.Poc.Helpers;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
+using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -21,12 +22,12 @@ namespace Gcp.PubSub.Poc.Producer.Services
             _options = options.Value;
             _logger = logger;
         }
-        
+
         private EmulatorDetection EmulatorDetection => _options.Emulated
             ? EmulatorDetection.EmulatorOnly
             : EmulatorDetection.ProductionOnly;
 
-        public async Task PublishMessagesAsync()
+        private async Task<PublisherClient> CreatePublisherAsync(CancellationToken cancellationToken)
         {
             var projectId = _options.ProjectId;
             var topicId = _options.TopicId;
@@ -48,12 +49,54 @@ namespace Gcp.PubSub.Poc.Producer.Services
             {
                 TopicName = topicName,
                 EmulatorDetection = EmulatorDetection
-            }.BuildAsync();
+            }.BuildAsync(cancellationToken);
 
-            await publisher.PublishAsync("Hello, Pubsub");
-            _logger.LogInformation("Hello, Pubsub");
+            return publisher;
+        }
 
-            await publisher.ShutdownAsync(TimeSpan.FromSeconds(15));
+        public async Task PublishMessagesAsync(CancellationToken cancellationToken = default)
+        {
+            var publisher = await CreatePublisherAsync(cancellationToken);
+
+            try
+            {
+                var messageCount = 0;
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        var message = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(message))
+                        {
+                            continue;
+                        }
+
+                        var pubsubMessage = new PubsubMessage
+                        {
+                            Data = ByteString.CopyFromUtf8(message)
+                        };
+
+                        await publisher.PublishAsync(pubsubMessage);
+                        _logger.LogInformation($"Published message: {message}");
+                        _logger.LogInformation($"Published message count: {++messageCount}");
+
+                        // Simulate some delay
+                        await Task.Delay(300, cancellationToken);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("Publishing cancelled");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Publishing failed");
+            }
+            finally
+            {
+                await publisher.ShutdownAsync(CancellationToken.None);
+            }
         }
     }
 }

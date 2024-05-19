@@ -2,6 +2,6 @@
 {
     public interface IProducerService
     {
-        Task PublishMessagesAsync();
+        Task PublishMessagesAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -12,9 +12,42 @@ namespace Gcp.PubSub.Poc.Producer
     {
         static async Task Main(string[] args)
         {
+            var cts = new CancellationTokenSource();
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                Console.WriteLine("Cancellation requested...");
+                cts.Cancel();
+                eventArgs.Cancel = true; // 防止程序立即終止
+            };
+
             var host = CreateHostBuilder(args).Build();
+
             var producer = host.Services.GetRequiredService<IProducerService>();
-            await producer.PublishMessagesAsync();
+            var producerTask = producer.PublishMessagesAsync(cts.Token);
+
+            try
+            {
+                await host.RunAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Host run cancelled.");
+            }
+            finally
+            {
+                Console.WriteLine("Host shutting down...");
+                await host.StopAsync(cts.Token);
+
+                // Ensure the producer task is completed
+                try
+                {
+                    await producerTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Producer task cancelled.");
+                }
+            }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
