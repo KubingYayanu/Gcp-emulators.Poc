@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gcp.PubSub.Poc", "src\services\Gcp.PubSub.Poc\Gcp.PubSub.Poc.csproj", "{157CA439-1940-4853-8E6C-BD218C759938}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gcp.PubSub.Poc.Producer", "src\services\Gcp.PubSub.Poc.Producer\Gcp.PubSub.Poc.Producer.csproj", "{157CA439-1940-4853-8E6C-BD218C759938}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

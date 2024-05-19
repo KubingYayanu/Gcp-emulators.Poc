@@ -5,7 +5,7 @@ using Redis.Poc.IoC;
 using Redis.Poc.Services;
 using Serilog;
 
-namespace Redis.Poc
+namespace Gcp.PubSub.Poc.Producer
 {
     internal class Program
     {
