@@ -22,6 +22,10 @@ namespace Gcp.PubSub.Poc.Consumer.Services
             _logger = logger;
         }
 
+        private EmulatorDetection EmulatorDetection => _options.Emulated
+            ? EmulatorDetection.EmulatorOnly
+            : EmulatorDetection.ProductionOnly;
+
         public async Task PullMessagesAsync()
         {
             var projectId = _options.ProjectId;
@@ -43,7 +47,7 @@ namespace Gcp.PubSub.Poc.Consumer.Services
             var subscriber = await new SubscriberClientBuilder
             {
                 SubscriptionName = subscriptionName,
-                EmulatorDetection = EmulatorDetection.EmulatorOnly
+                EmulatorDetection = EmulatorDetection
             }.BuildAsync();
             var receivedMessages = new List<PubsubMessage>();
 

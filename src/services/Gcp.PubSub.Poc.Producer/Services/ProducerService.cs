@@ -21,6 +21,10 @@ namespace Gcp.PubSub.Poc.Producer.Services
             _options = options.Value;
             _logger = logger;
         }
+        
+        private EmulatorDetection EmulatorDetection => _options.Emulated
+            ? EmulatorDetection.EmulatorOnly
+            : EmulatorDetection.ProductionOnly;
 
         public async Task PublishMessagesAsync()
         {
@@ -43,7 +47,7 @@ namespace Gcp.PubSub.Poc.Producer.Services
             var publisher = await new PublisherClientBuilder
             {
                 TopicName = topicName,
-                EmulatorDetection = EmulatorDetection.EmulatorOnly
+                EmulatorDetection = EmulatorDetection
             }.BuildAsync();
 
             await publisher.PublishAsync("Hello, Pubsub");
