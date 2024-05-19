@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Gcp.PubSub.Poc.Producer.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Redis.Poc.Services;
 
-namespace Redis.Poc.IoC
+namespace Gcp.PubSub.Poc.Producer.IoC
 {
     public static class ConfigureApplicationServices
     {

@@ -1,7 +1,7 @@
 ﻿using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 
-namespace Redis.Poc.Services
+namespace Gcp.PubSub.Poc.Producer.Services
 {
     public class ProducerService : IProducerService
     {

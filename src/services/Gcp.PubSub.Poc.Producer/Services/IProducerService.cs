@@ -1,4 +1,4 @@
-﻿namespace Redis.Poc.Services
+﻿namespace Gcp.PubSub.Poc.Producer.Services
 {
     public interface IProducerService
     {

@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Gcp.PubSub.Poc.Producer.IoC;
+using Gcp.PubSub.Poc.Producer.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Redis.Poc.IoC;
-using Redis.Poc.Services;
 using Serilog;
 
 namespace Gcp.PubSub.Poc.Producer
