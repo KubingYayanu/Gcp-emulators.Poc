@@ -33,21 +33,16 @@ namespace Gcp.PubSub.Poc.Producer.Services
             var topicId = _options.TopicId;
             var subscriptionId = _options.SubscriptionId;
 
-            // Topic manage
-            var topic = await _pubSubResourceHelper.CreateTopicAsync(projectId, topicId);
-            var topicName = topic.TopicName;
-
             // Subscription manage
             var subscription = await _pubSubResourceHelper.CreateSubscriptionAsync(
                 projectId: projectId,
                 topicId: topicId,
                 subscriptionId: subscriptionId);
-            var subscriptionName = subscription.SubscriptionName;
 
             // Publisher manage
             var publisher = await new PublisherClientBuilder
             {
-                TopicName = topicName,
+                TopicName = subscription.TopicAsTopicName,
                 EmulatorDetection = EmulatorDetection
             }.BuildAsync(cancellationToken);
 
