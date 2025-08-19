@@ -18,7 +18,17 @@ namespace Gcp.PubSub.Poc.IoC
 
             services.TryAddSingleton<IPubSubResourceHelper, PubSubResourceHelper>();
 
+            AddPubSubHelper(services);
+
             return services;
+        }
+
+        private static void AddPubSubHelper(IServiceCollection services)
+        {
+            services.AddSingleton<IPubSubPublisherPool, PubSubPublisherPool>();
+            services.AddSingleton<IPubSubSubscriberPool, PubSubSubscriberPool>();
+            services.AddSingleton<IPubSubPublisher, PubSubPublisher>();
+            services.AddSingleton<IPubSubConsumer, PubSubConsumer>();
         }
     }
 }
