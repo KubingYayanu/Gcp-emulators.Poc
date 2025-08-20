@@ -1,1 +1,1 @@
-FROM google/cloud-sdk:475.0.0-emulators
+FROM google/cloud-sdk:535.0.0-emulators

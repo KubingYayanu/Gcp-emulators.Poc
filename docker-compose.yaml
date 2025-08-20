@@ -1,6 +1,6 @@
 services:
   gcp-emulators:
-    image: gcp-emulators:475.0.0-emulators
+    image: gcp-emulators:535.0.0-emulators
     build:
       context: ./src
       dockerfile: infra/gcp-emulators/Dockerfile

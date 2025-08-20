@@ -17,18 +17,18 @@ $ docker compose -f docker-compose.yaml -p gcp-emulators-poc up -d --build
 
 ```bash
 # 查詢所有 Topics
-$ curl "http://localhost:8085/v1/projects/lets-have-some-fun/topics"
+$ curl -s "http://localhost:8085/v1/projects/lets-have-some-fun/topics" | jq
 
 # 查詢指定 Topic 是否存在
-$ curl "http://localhost:8085/v1/projects/lets-have-some-fun/topics/something-go-wrong"
+$ curl -s "http://localhost:8085/v1/projects/lets-have-some-fun/topics/something-go-wrong" | jq
 ```
 
 ## Subscriptions
 
 ```bash
 # 查詢所有 Subscriptions
-$ curl "http://localhost:8085/v1/projects/lets-have-some-fun/subscriptions"
+$ curl -s "http://localhost:8085/v1/projects/lets-have-some-fun/subscriptions" | jq
 
 # 查詢指定 Subscription 是否存在
-$ curl "http://localhost:8085/v1/projects/lets-have-some-fun/subscriptions/regist-something"
+$ curl -s "http://localhost:8085/v1/projects/lets-have-some-fun/subscriptions/regist-something" | jq
 ```
