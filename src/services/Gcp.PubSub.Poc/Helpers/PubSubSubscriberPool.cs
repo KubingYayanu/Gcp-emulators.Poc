@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 
 namespace Gcp.PubSub.Poc.Helpers
@@ -24,18 +25,19 @@ namespace Gcp.PubSub.Poc.Helpers
                 {
                     var subscriptionName = SubscriptionName
                         .FromProjectSubscription(projectId, subscriptionId);
-                    var subscriberSettings = new SubscriberClient.Settings
+                    var settings = new SubscriberClient.Settings
                     {
                         AckDeadline = TimeSpan.FromSeconds(60)
                     };
-                    var subscriberClientBuilder = new SubscriberClientBuilder
+                    var builder = new SubscriberClientBuilder
                     {
                         SubscriptionName = subscriptionName,
-                        Settings = subscriberSettings
+                        Settings = settings,
+                        EmulatorDetection = EmulatorDetection.EmulatorOnly
                     };
 
-                    var subscriberClient = await subscriberClientBuilder.BuildAsync();
-                    return subscriberClient;
+                    var client = await builder.BuildAsync();
+                    return client;
                 }));
 
             return await lazySubscriber.GetValueAsync();

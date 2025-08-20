@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 
 namespace Gcp.PubSub.Poc.Helpers
@@ -23,8 +24,14 @@ namespace Gcp.PubSub.Poc.Helpers
                 _ => new AsyncLazy<PublisherClient>(async () =>
                 {
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
-                    var publisherClient = await PublisherClient.CreateAsync(topicName);
-                    return publisherClient;
+                    var builder = new PublisherClientBuilder
+                    {
+                        TopicName = topicName,
+                        EmulatorDetection = EmulatorDetection.EmulatorOnly // Adjust as needed
+                    };
+                    var client = await builder.BuildAsync();
+                    
+                    return client;
                 }));
 
             return await lazyPublisher.GetValueAsync();

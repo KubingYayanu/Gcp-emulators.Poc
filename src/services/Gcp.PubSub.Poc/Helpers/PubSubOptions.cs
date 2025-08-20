@@ -6,10 +6,10 @@ namespace Gcp.PubSub.Poc.Helpers
 
         public bool Emulated { get; set; }
 
-        public string ProjectId => Environment.GetEnvironmentVariable("PUBSUB_PROJECT_ID");
+        public string ProjectId => Environment.GetEnvironmentVariable("PUBSUB_PROJECT_ID")!;
 
-        public string TopicId { get; set; } = "something-go-wrong";
+        public string TopicId => Environment.GetEnvironmentVariable("PUBSUB_TOPIC_ID")!;
 
-        public string SubscriptionId { get; set; } = "regist-something";
+        public string SubscriptionId => Environment.GetEnvironmentVariable("PUBSUB_SUBSCRIPTION_ID")!;
     }
 }
