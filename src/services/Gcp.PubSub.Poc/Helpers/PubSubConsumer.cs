@@ -49,13 +49,13 @@ namespace Gcp.PubSub.Poc.Helpers
         }
 
         public async Task StopAsync(
-            PubSubTaskConfig config, 
+            PubSubTaskConfig config,
             CancellationToken cancellationToken = default)
         {
             var subscriber = await _subscriberPool.GetSubscriberAsync(
                 projectId: config.ProjectId,
                 subscriptionId: config.SubscriptionId);
-        
+
             await subscriber.StopAsync(TimeSpan.FromSeconds(30));
         }
     }

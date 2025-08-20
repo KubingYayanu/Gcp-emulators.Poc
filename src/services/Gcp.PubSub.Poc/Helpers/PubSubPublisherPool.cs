@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
+using Microsoft.Extensions.Options;
 
 namespace Gcp.PubSub.Poc.Helpers
 {
@@ -8,13 +9,19 @@ namespace Gcp.PubSub.Poc.Helpers
     {
         private readonly ConcurrentDictionary<string, AsyncLazy<PublisherClient>> _publishers = new();
         private readonly SemaphoreSlim _lock;
+        private readonly PubSubOptions _options;
         private readonly int _maxSize = 10;
         private bool _disposed;
 
-        public PubSubPublisherPool()
+        public PubSubPublisherPool(IOptions<PubSubOptions> options)
         {
+            _options = options.Value;
             _lock = new SemaphoreSlim(_maxSize, _maxSize);
         }
+        
+        private EmulatorDetection EmulatorDetection => _options.Emulated
+            ? EmulatorDetection.EmulatorOnly
+            : EmulatorDetection.ProductionOnly;
 
         public async Task<PublisherClient> GetPublisherAsync(string projectId, string topicId)
         {
@@ -27,7 +34,7 @@ namespace Gcp.PubSub.Poc.Helpers
                     var builder = new PublisherClientBuilder
                     {
                         TopicName = topicName,
-                        EmulatorDetection = EmulatorDetection.EmulatorOnly // Adjust as needed
+                        EmulatorDetection = EmulatorDetection
                     };
                     var client = await builder.BuildAsync();
                     
@@ -37,6 +44,9 @@ namespace Gcp.PubSub.Poc.Helpers
             return await lazyPublisher.GetValueAsync();
         }
 
+        /// <summary>
+        /// 由 Host 自動調用，釋放資源
+        /// </summary>
         public async ValueTask DisposeAsync()
         {
             if (_disposed) return;

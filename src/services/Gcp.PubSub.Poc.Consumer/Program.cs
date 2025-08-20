@@ -23,7 +23,7 @@ namespace Gcp.PubSub.Poc.Consumer
             var host = CreateHostBuilder(args).Build();
 
             var consumer = host.Services.GetRequiredService<IConsumerService>();
-            await consumer.PullMessagesAsync(cts.Token);
+            var consumerTask =  consumer.PullMessagesAsync(cts.Token);
 
             try
             {
@@ -37,6 +37,16 @@ namespace Gcp.PubSub.Poc.Consumer
             {
                 Console.WriteLine("Host shutting down...");
                 await host.StopAsync(cts.Token);
+
+                // Ensure the consumer task is completed
+                try
+                {
+                    await consumerTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Consumer task cancelled.");
+                }
             }
         }
 
