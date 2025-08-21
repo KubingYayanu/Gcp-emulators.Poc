@@ -3,7 +3,7 @@ using Google.Cloud.PubSub.V1;
 using Grpc.Core;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Helpers
+namespace Gcp.PubSub.Poc.Helpers.V1
 {
     public class PubSubResourceHelper : IPubSubResourceHelper
     {

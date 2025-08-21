@@ -1,4 +1,4 @@
-namespace Gcp.PubSub.Poc.Helpers
+namespace Gcp.PubSub.Poc.Helpers.V2
 {
     public interface IPubSubConsumer
     {

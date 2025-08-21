@@ -3,7 +3,7 @@ using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Helpers
+namespace Gcp.PubSub.Poc.Helpers.V2
 {
     public class PubSubPublisherPool : IPubSubPublisherPool
     {

@@ -1,6 +1,6 @@
 using Google.Cloud.PubSub.V1;
 
-namespace Gcp.PubSub.Poc.Helpers
+namespace Gcp.PubSub.Poc.Helpers.V1
 {
     public interface IPubSubResourceHelper
     {

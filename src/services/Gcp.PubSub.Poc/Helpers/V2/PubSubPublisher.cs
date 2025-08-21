@@ -1,7 +1,7 @@
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 
-namespace Gcp.PubSub.Poc.Helpers
+namespace Gcp.PubSub.Poc.Helpers.V2
 {
     public class PubSubPublisher : IPubSubPublisher
     {

@@ -1,4 +1,6 @@
 using Gcp.PubSub.Poc.Helpers;
+using Gcp.PubSub.Poc.Helpers.V1;
+using Gcp.PubSub.Poc.Helpers.V2;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

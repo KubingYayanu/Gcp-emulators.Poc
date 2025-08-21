@@ -1,4 +1,5 @@
 ﻿using Gcp.PubSub.Poc.Helpers;
+using Gcp.PubSub.Poc.Helpers.V2;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
