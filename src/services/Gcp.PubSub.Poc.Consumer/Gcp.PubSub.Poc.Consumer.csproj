@@ -30,6 +30,9 @@
       <None Update="Properties\launchSettings.json">
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </None>
+      <None Update="appsettings.Local.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

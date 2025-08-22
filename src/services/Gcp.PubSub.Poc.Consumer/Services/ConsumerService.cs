@@ -1,5 +1,5 @@
 using Gcp.PubSub.Poc.Helpers;
-using Gcp.PubSub.Poc.Helpers.V2;
+using Gcp.PubSub.Poc.Helpers.V3;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -7,16 +7,16 @@ namespace Gcp.PubSub.Poc.Consumer.Services
 {
     public class ConsumerService : IConsumerService
     {
-        private readonly IPubSubConsumer _pubSubConsumer;
+        private readonly IPubSubSubscriptionManager _subscriptionManager;
         private readonly PubSubOptions _options;
         private readonly ILogger<ConsumerService> _logger;
 
         public ConsumerService(
-            IPubSubConsumer pubSubConsumer,
+            IPubSubSubscriptionManager subscriptionManager,
             IOptions<PubSubOptions> options,
             ILogger<ConsumerService> logger)
         {
-            _pubSubConsumer = pubSubConsumer;
+            _subscriptionManager = subscriptionManager;
             _options = options.Value;
             _logger = logger;
         }
@@ -30,14 +30,21 @@ namespace Gcp.PubSub.Poc.Consumer.Services
                 SubscriptionId = _options.SubscriptionId,
             };
 
-            await _pubSubConsumer.StartAsync(
+            var subscriptionName = nameof(ConsumerService);
+            await _subscriptionManager.StartSubscriptionAsync(
+                subscriptionName: subscriptionName,
                 config: config,
-                handleMessageAsync: (message, cancellationToken) =>
-                {
-                    _logger.LogInformation("Received message {MessageMessage}", message.Message);
-                    return Task.CompletedTask;
-                },
+                handleMessageAsync: (payload, ct) => ProcessMessage(subscriptionName, payload, ct),
                 cancellationToken: cancellationToken);
+        }
+
+        private async Task ProcessMessage(
+            string subscriptionName,
+            PubSubPayload payload,
+            CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("[{Subscription}] Processing: {Message}", subscriptionName, payload.Message);
+            await Task.Delay(100, cancellationToken);
         }
     }
 }

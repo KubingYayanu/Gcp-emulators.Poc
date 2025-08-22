@@ -4,6 +4,7 @@
     "Gcp.PubSub.Poc.Consumer": {
       "commandName": "Project",
       "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
         "PUBSUB_EMULATOR_HOST": "localhost:8085",
         "PUBSUB_PROJECT_ID": "test-project",
         "PUBSUB_TOPIC_ID": "test-topic",

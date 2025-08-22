@@ -52,11 +52,14 @@ namespace Gcp.PubSub.Poc.Consumer
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((host, builder) =>
                 {
                     builder.SetBasePath(Directory.GetCurrentDirectory());
-                    builder.AddJsonFile("appsettings.json", optional: true);
+                    builder.AddJsonFile("appsettings.json", optional: true)
+                        .AddJsonFile($"appsettings.{environmentName}.json", optional: true);
                     builder.AddCommandLine(args);
                 })
                 .UseSerilog((host, config) =>

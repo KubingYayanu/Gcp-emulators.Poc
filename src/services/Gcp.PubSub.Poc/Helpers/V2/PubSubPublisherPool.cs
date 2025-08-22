@@ -21,18 +21,21 @@ namespace Gcp.PubSub.Poc.Helpers.V2
         
         private EmulatorDetection EmulatorDetection => _options.Emulated
             ? EmulatorDetection.EmulatorOnly
-            : EmulatorDetection.ProductionOnly;
+            : EmulatorDetection.EmulatorOrProduction;
 
         public async Task<PublisherClient> GetPublisherAsync(string projectId, string topicId)
         {
             var key = $"{projectId}:{topicId}";
 
+            Console.WriteLine("EmulatorDetection: " + EmulatorDetection);
+            Console.WriteLine("ASPNETCORE_ENVIRONMENT: " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
             var lazyPublisher = _publishers.GetOrAdd(key,
                 _ => new AsyncLazy<PublisherClient>(async () =>
                 {
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
                     var builder = new PublisherClientBuilder
                     {
+                        Endpoint = _options.Endpoint,
                         TopicName = topicName,
                         EmulatorDetection = EmulatorDetection
                     };
