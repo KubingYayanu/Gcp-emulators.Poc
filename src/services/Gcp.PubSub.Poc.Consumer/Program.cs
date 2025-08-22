@@ -1,5 +1,4 @@
 ﻿using Gcp.PubSub.Poc.Consumer.IoC;
-using Gcp.PubSub.Poc.Consumer.Services;
 using Gcp.PubSub.Poc.IoC;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,48 +11,17 @@ namespace Gcp.PubSub.Poc.Consumer
     {
         static async Task Main(string[] args)
         {
-            var cts = new CancellationTokenSource();
-            Console.CancelKeyPress += (sender, eventArgs) =>
-            {
-                Console.WriteLine("Cancellation requested...");
-                cts.Cancel();
-                eventArgs.Cancel = true; // 防止程序立即終止 
-            };
-
             var host = CreateHostBuilder(args).Build();
 
-            var consumer = host.Services.GetRequiredService<IConsumerService>();
-            var consumerTask =  consumer.PullMessagesAsync(cts.Token);
-
-            try
-            {
-                await host.RunAsync(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine("Host run cancelled.");
-            }
-            finally
-            {
-                Console.WriteLine("Host shutting down...");
-                await host.StopAsync(cts.Token);
-
-                // Ensure the consumer task is completed
-                try
-                {
-                    await consumerTask;
-                }
-                catch (OperationCanceledException)
-                {
-                    Console.WriteLine("Consumer task cancelled.");
-                }
-            }
+            await host.StartAsync();
+            await host.WaitForShutdownAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            
+            Console.WriteLine($"EnvironmentName: {environmentName}");
+
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((host, builder) =>
                 {
@@ -65,6 +33,7 @@ namespace Gcp.PubSub.Poc.Consumer
                 .UseSerilog((host, config) =>
                 {
                     config.ReadFrom.Configuration(host.Configuration)
+                        .Enrich.WithProperty("Service", "Gcp.PubSub.Poc.Consumer")
                         .Enrich.FromLogContext()
                         .WriteTo.Console();
                 })
