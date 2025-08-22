@@ -27,6 +27,10 @@ $ curl -s "http://localhost:8085/v1/projects/test-project/topics" | jq
 # 查詢指定 Topic 是否存在
 $ curl -s "http://localhost:8085/v1/projects/test-project/topics/test-topic" | jq
 
+# 刪除 Topic
+
+$ curl -X DELETE http://localhost:8085/v1/projects/test-project/topics/test-topic
+
 # 發布訊息
 $ curl -X POST http://localhost:8085/v1/projects/test-project/topics/test-topic:publish \
   -H "Content-Type: application/json" \
@@ -48,17 +52,22 @@ $ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/test-
         "ackDeadlineSeconds": 60
       }'
 
-# 刪除 Subscription
-$ curl -X DELETE http://localhost:8085/v1/projects/test-project/subscriptions/test-subscription
-
 # 查詢所有 Subscriptions
 $ curl -s "http://localhost:8085/v1/projects/test-project/subscriptions" | jq
 
 # 查詢指定 Subscription 是否存在
 $ curl -s "http://localhost:8085/v1/projects/test-project/subscriptions/test-subscription" | jq
 
+# 刪除 Subscription
+$ curl -X DELETE http://localhost:8085/v1/projects/test-project/subscriptions/test-subscription
+
 # 拉取訊息
 $ curl -s -X POST http://localhost:8085/v1/projects/test-project/subscriptions/test-subscription:pull \
   -H "Content-Type: application/json" \
-  -d '{"maxMessages":1}' | jq
+  -d '{
+        "maxMessages": 1
+      }'
+
+#
+$ curl -X POST http://localhost:8085/v1/projects/test-project/subscriptions/test-subscription:35
 ```
