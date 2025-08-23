@@ -1,4 +1,4 @@
-namespace Gcp.PubSub.Poc.Infrastructure.PubSub
+namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
     public class PubSubOptions
     {
