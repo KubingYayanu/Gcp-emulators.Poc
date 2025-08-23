@@ -14,17 +14,25 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
         private readonly SemaphoreSlim _lock;
         private readonly PubSubOptions _options;
         private readonly ILogger<PubSubSubscriberPool> _logger;
-        private readonly int _maxSize = 10;
+        private readonly int _maxSize = 1;
         private bool _disposed;
 
-        public PubSubSubscriberPool(IOptions<PubSubOptions> options, ILogger<PubSubSubscriberPool> logger)
+        public PubSubSubscriberPool(
+            IOptions<PubSubOptions> options,
+            ILogger<PubSubSubscriberPool> logger)
         {
             _options = options.Value;
             _logger = logger;
             _lock = new SemaphoreSlim(_maxSize, _maxSize);
         }
 
-        private EmulatorDetection EmulatorDetection => EmulatorDetection.EmulatorOrProduction;
+        private EmulatorDetection EmulatorDetection => _options.Emulated
+            ? EmulatorDetection.EmulatorOnly
+            : EmulatorDetection.ProductionOnly;
+
+        private string? Endpoint => EmulatorDetection == EmulatorDetection.EmulatorOnly
+            ? null
+            : _options.Endpoint;
 
         public async Task<SubscriberClient> GetOrCreateSubscriberAsync(
             string consumerId,
@@ -32,6 +40,8 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             string subscriptionId,
             Func<PubSubPayload, CancellationToken, Task> handler)
         {
+            if (_disposed) throw new ObjectDisposedException(nameof(PubSubSubscriberPool));
+
             var subscriberKey = $"{consumerId}:{projectId}:{subscriptionId}";
             var registrationKey = subscriberKey;
 
@@ -53,12 +63,13 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 
                     var settings = new SubscriberClient.Settings
                     {
+                        // TODO: 改為參數傳入
                         AckDeadline = TimeSpan.FromSeconds(60)
                     };
 
                     var builder = new SubscriberClientBuilder
                     {
-                        Endpoint = _options.Endpoint,
+                        Endpoint = Endpoint,
                         SubscriptionName = subscriptionName,
                         Settings = settings,
                         EmulatorDetection = EmulatorDetection
@@ -115,6 +126,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             }
         }
 
+        /// <summary>
+        /// Host 自動調用，釋放資源
+        /// </summary>
         public async ValueTask DisposeAsync()
         {
             if (_disposed) return;

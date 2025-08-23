@@ -1,11 +1,11 @@
 namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
-    public interface IPubSubSubscriptionManager : IAsyncDisposable
+    public interface IPubSubSubscriberManager : IAsyncDisposable
     {
-        int ActiveSubscriptionCount { get; }
+        int ActiveSubscriberCount { get; }
 
-        Task<ISubscriptionHandle> StartSubscriptionAsync(
-            string subscriptionName, // 給訂閱一個名稱以便管理
+        Task<ISubscriptionHandle> StartSubscriberAsync(
+            string subscriberName, // 給訂閱一個名稱以便管理
             PubSubTaskConfig config,
             Func<PubSubPayload, CancellationToken, Task> handleMessageAsync,
             CancellationToken cancellationToken = default);

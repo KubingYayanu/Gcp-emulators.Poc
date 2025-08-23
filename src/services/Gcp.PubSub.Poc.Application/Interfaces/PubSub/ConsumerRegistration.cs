@@ -9,6 +9,6 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
         
         public Func<PubSubPayload, CancellationToken, Task> Handler { get; set; }
         
-        public DateTime RegisteredAt { get; set; }
+        public DateTimeOffset RegisteredAt { get; set; }
     }
 }

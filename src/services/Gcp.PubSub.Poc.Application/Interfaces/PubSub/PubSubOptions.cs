@@ -7,7 +7,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
         public bool Emulated { get; set; }
 
         public string Endpoint => Environment.GetEnvironmentVariable("PUBSUB_EMULATOR_HOST")!;
-        
+
         public string ProjectId => Environment.GetEnvironmentVariable("PUBSUB_PROJECT_ID")!;
 
         public string TopicId => Environment.GetEnvironmentVariable("PUBSUB_TOPIC_ID")!;

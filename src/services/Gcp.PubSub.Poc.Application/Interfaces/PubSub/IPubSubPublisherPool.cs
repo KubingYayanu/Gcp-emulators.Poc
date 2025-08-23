@@ -4,6 +4,14 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
     public interface IPubSubPublisherPool : IAsyncDisposable
     {
-        Task<PublisherClient> GetPublisherAsync(string projectId, string topicId);
+        Task<PublisherClient> GetOrCreatePublisherAsync(
+            string producerId,
+            string projectId,
+            string topicId);
+        
+        Task RemovePublisherAsync(
+            string producerId, 
+            string projectId,
+            string topicId);
     }
 }

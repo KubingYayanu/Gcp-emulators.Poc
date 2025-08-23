@@ -48,20 +48,31 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Message processing failed for consumer {ConsumerId}", _consumerId);
+                    _logger.LogError(
+                        exception: ex,
+                        message: "Message processing failed for consumer {ConsumerId}",
+                        args: [_consumerId]);
                     return SubscriberClient.Reply.Nack;
                 }
             });
 
-            _logger.LogInformation("Consumer {ConsumerId} started for subscription {ProjectId}:{SubscriptionId}",
-                _consumerId,
-                config.ProjectId,
-                config.SubscriptionId);
-            
-            // await startTask;
+            _logger.LogInformation(
+                message: "Consumer {ConsumerId} started for subscription {ProjectId}:{SubscriptionId}",
+                args:
+                [
+                    _consumerId,
+                    config.ProjectId,
+                    config.SubscriptionId
+                ]);
 
             // 立即返回 handle，StartAsync 在背景執行
-            return new SubscriptionHandle(_subscriberPool, subscriber, startTask, _consumerId, config, _logger);
+            return new SubscriptionHandle(
+                subscriberPool: _subscriberPool,
+                subscriber: subscriber,
+                startTask: startTask,
+                consumerId: _consumerId,
+                config: config,
+                logger: _logger);
         }
 
         private Func<PubSubPayload, CancellationToken, Task> CreateWrappedHandler(
@@ -76,11 +87,15 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        "Handler failed for consumer {ConsumerId}, subscription {ProjectId}:{SubscriptionId}",
-                        _consumerId,
-                        config.ProjectId,
-                        config.SubscriptionId);
+                    _logger.LogError(
+                        exception: ex,
+                        message: "Handler failed for consumer {ConsumerId}, subscription {ProjectId}:{SubscriptionId}",
+                        args:
+                        [
+                            _consumerId,
+                            config.ProjectId,
+                            config.SubscriptionId
+                        ]);
                     throw;
                 }
             };

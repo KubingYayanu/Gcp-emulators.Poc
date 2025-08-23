@@ -5,53 +5,53 @@ using Microsoft.Extensions.Logging;
 
 namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 {
-    public class PubSubSubscriptionManager : IPubSubSubscriptionManager
+    public class PubSubSubscriberManager : IPubSubSubscriberManager
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<PubSubSubscriptionManager> _logger;
-        private readonly ConcurrentDictionary<string, ISubscriptionHandle> _subscriptions = new();
+        private readonly ILogger<PubSubSubscriberManager> _logger;
+        private readonly ConcurrentDictionary<string, ISubscriptionHandle> _subscribers = new();
         private readonly SemaphoreSlim _lock = new(1, 1);
         private volatile bool _disposed;
 
-        public PubSubSubscriptionManager(
+        public PubSubSubscriberManager(
             IServiceProvider serviceProvider,
-            ILogger<PubSubSubscriptionManager> logger)
+            ILogger<PubSubSubscriberManager> logger)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
         }
 
-        public int ActiveSubscriptionCount => _subscriptions.Count;
+        public int ActiveSubscriberCount => _subscribers.Count;
 
-        public async Task<ISubscriptionHandle> StartSubscriptionAsync(
-            string subscriptionName,
+        public async Task<ISubscriptionHandle> StartSubscriberAsync(
+            string subscriberName,
             PubSubTaskConfig config,
             Func<PubSubPayload, CancellationToken, Task> handleMessageAsync,
             CancellationToken cancellationToken = default)
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(PubSubSubscriptionManager));
+                throw new ObjectDisposedException(nameof(PubSubSubscriberManager));
 
-            if (string.IsNullOrEmpty(subscriptionName))
-                throw new ArgumentException("Subscription name cannot be null or empty", nameof(subscriptionName));
+            if (string.IsNullOrEmpty(subscriberName))
+                throw new ArgumentException("Subscription name cannot be null or empty", nameof(subscriberName));
 
             await _lock.WaitAsync(cancellationToken);
             try
             {
-                if (_subscriptions.ContainsKey(subscriptionName))
+                if (_subscribers.ContainsKey(subscriberName))
                 {
-                    throw new InvalidOperationException($"Subscription '{subscriptionName}' is already active");
+                    throw new InvalidOperationException($"Subscription '{subscriberName}' is already active");
                 }
 
-                // 創建新的 Consumer 實例（Transient）
+                // 創建新的 Consumer 實例(Transient)
                 var consumer = _serviceProvider.GetRequiredService<IPubSubSubscriber>();
                 var handle = await consumer.StartAsync(config, handleMessageAsync, cancellationToken);
 
-                _subscriptions[subscriptionName] = handle;
+                _subscribers[subscriberName] = handle;
 
                 _logger.LogInformation(
                     "Started managed subscription '{SubscriptionName}' for {ProjectId}:{SubscriptionId}",
-                    subscriptionName,
+                    subscriberName,
                     config.ProjectId,
                     config.SubscriptionId);
 
@@ -67,7 +67,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
         {
             if (string.IsNullOrEmpty(subscriptionName)) return;
 
-            if (_subscriptions.TryRemove(subscriptionName, out var handle))
+            if (_subscribers.TryRemove(subscriptionName, out var handle))
             {
                 try
                 {
@@ -84,7 +84,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 
         public async Task StopAllSubscriptionsAsync(CancellationToken cancellationToken = default)
         {
-            var subscriptionNames = _subscriptions.Keys.ToList();
+            var subscriptionNames = _subscribers.Keys.ToList();
             var stopTasks = subscriptionNames.Select(name => StopSubscriptionAsync(name, cancellationToken));
 
             await Task.WhenAll(stopTasks);
@@ -94,12 +94,12 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 
         public ISubscriptionHandle? GetSubscription(string subscriptionName)
         {
-            return _subscriptions.GetValueOrDefault(subscriptionName);
+            return _subscribers.GetValueOrDefault(subscriptionName);
         }
 
         public IEnumerable<ISubscriptionHandle> GetActiveSubscriptions()
         {
-            return _subscriptions.Values.ToList();
+            return _subscribers.Values.ToList();
         }
 
         public async ValueTask DisposeAsync()

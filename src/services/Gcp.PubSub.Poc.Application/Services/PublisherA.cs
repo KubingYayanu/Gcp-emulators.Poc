@@ -8,16 +8,16 @@ namespace Gcp.PubSub.Poc.Application.Services
 {
     public class PublisherA : IJobService
     {
-        private readonly IPubSubPublisher _pubSubPublisher;
+        private readonly IPubSubPublisherManager _publisherManager;
         private readonly PubSubOptions _options;
         private readonly ILogger<PublisherA> _logger;
 
         public PublisherA(
-            IPubSubPublisher pubSubPublisher,
+            IPubSubPublisherManager publisherManager,
             IOptions<PubSubOptions> options,
             ILogger<PublisherA> logger)
         {
-            _pubSubPublisher = pubSubPublisher;
+            _publisherManager = publisherManager;
             _options = options.Value;
             _logger = logger;
         }
@@ -35,6 +35,12 @@ namespace Gcp.PubSub.Poc.Application.Services
                     SubscriptionId = _options.SubscriptionId,
                 };
 
+                var publisherName = nameof(PublisherA);
+                var publisherHandle = await _publisherManager.StartPublisherAsync(
+                    publisherName: publisherName,
+                    config: config,
+                    cancellationToken: cancellationToken);
+
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     if (Console.KeyAvailable)
@@ -45,8 +51,7 @@ namespace Gcp.PubSub.Poc.Application.Services
                             continue;
                         }
 
-                        await _pubSubPublisher.PublishAsync(
-                            config: config,
+                        await publisherHandle.PublishAsync(
                             payload: new PubSubPayload
                             {
                                 Message = message,

@@ -2,9 +2,8 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
     public interface IPubSubPublisher
     {
-        Task<string> PublishAsync(
+        Task<IPublisherHandle> StartAsync(
             PubSubTaskConfig config,
-            PubSubPayload payload,
             CancellationToken cancellationToken = default);
     }
 }

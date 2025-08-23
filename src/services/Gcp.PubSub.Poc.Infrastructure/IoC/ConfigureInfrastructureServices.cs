@@ -25,12 +25,13 @@ namespace Gcp.PubSub.Poc.Infrastructure.IoC
         {
             // Producer
             services.AddSingleton<IPubSubPublisherPool, PubSubPublisherPool>();
-            services.AddSingleton<IPubSubPublisher, PubSubPublisher>();
+            services.AddTransient<IPubSubPublisher, PubSubPublisher>();
+            services.AddSingleton<IPubSubPublisherManager, PubSubPublisherManager>();
 
             // Consumer
             services.AddSingleton<IPubSubSubscriberPool, PubSubSubscriberPool>();
             services.AddTransient<IPubSubSubscriber, PubSubSubscriber>();
-            services.AddSingleton<IPubSubSubscriptionManager, PubSubSubscriptionManager>();
+            services.AddSingleton<IPubSubSubscriberManager, PubSubSubscriberManager>();
         }
     }
 }

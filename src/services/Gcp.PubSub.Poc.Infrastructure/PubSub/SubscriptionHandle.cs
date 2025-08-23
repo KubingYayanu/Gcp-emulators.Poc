@@ -11,14 +11,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
         private readonly ILogger _logger;
         private volatile bool _disposed;
 
-        public string ConsumerId { get; }
-        public string ProjectId { get; }
-        public string SubscriptionId { get; }
-        public Task StartTask { get; }
-
-        public bool IsRunning =>
-            StartTask is { IsCompleted: false, IsCanceled: false, IsFaulted: false };
-
         public SubscriptionHandle(
             IPubSubSubscriberPool subscriberPool,
             SubscriberClient subscriber,
@@ -38,6 +30,17 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             // 監控背景任務的異常
             _ = MonitorStartTaskAsync();
         }
+
+        public string ConsumerId { get; }
+
+        public string ProjectId { get; }
+
+        public string SubscriptionId { get; }
+
+        public Task StartTask { get; }
+
+        public bool IsRunning =>
+            StartTask is { IsCompleted: false, IsCanceled: false, IsFaulted: false };
 
         private async Task MonitorStartTaskAsync()
         {
