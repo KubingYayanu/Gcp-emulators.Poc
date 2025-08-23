@@ -44,7 +44,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                 }
 
                 // 創建新的 Consumer 實例（Transient）
-                var consumer = _serviceProvider.GetRequiredService<IPubSubConsumer>();
+                var consumer = _serviceProvider.GetRequiredService<IPubSubSubscriber>();
                 var handle = await consumer.StartAsync(config, handleMessageAsync, cancellationToken);
 
                 _subscriptions[subscriptionName] = handle;

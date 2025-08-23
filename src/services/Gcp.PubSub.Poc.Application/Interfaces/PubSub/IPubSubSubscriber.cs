@@ -1,6 +1,6 @@
 namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
-    public interface IPubSubConsumer : IAsyncDisposable
+    public interface IPubSubSubscriber : IAsyncDisposable
     {
         Task<ISubscriptionHandle> StartAsync(
             PubSubTaskConfig config,

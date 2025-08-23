@@ -4,15 +4,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 {
-    public class PubSubConsumer : IPubSubConsumer
+    public class PubSubSubscriber : IPubSubSubscriber
     {
         private readonly IPubSubSubscriberPool _subscriberPool;
-        private readonly ILogger<PubSubConsumer> _logger;
+        private readonly ILogger<PubSubSubscriber> _logger;
         private readonly string _consumerId;
 
-        public PubSubConsumer(
+        public PubSubSubscriber(
             IPubSubSubscriberPool subscriberPool,
-            ILogger<PubSubConsumer> logger)
+            ILogger<PubSubSubscriber> logger)
         {
             _subscriberPool = subscriberPool;
             _logger = logger;

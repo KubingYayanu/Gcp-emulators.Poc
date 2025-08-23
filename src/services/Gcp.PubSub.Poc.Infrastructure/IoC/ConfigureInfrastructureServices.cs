@@ -29,7 +29,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.IoC
 
             // Consumer
             services.AddSingleton<IPubSubSubscriberPool, PubSubSubscriberPool>();
-            services.AddTransient<IPubSubConsumer, PubSubConsumer>();
+            services.AddTransient<IPubSubSubscriber, PubSubSubscriber>();
             services.AddSingleton<IPubSubSubscriptionManager, PubSubSubscriptionManager>();
         }
     }
