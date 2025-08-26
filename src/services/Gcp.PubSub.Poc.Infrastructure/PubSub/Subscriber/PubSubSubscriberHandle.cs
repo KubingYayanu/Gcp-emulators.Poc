@@ -1,8 +1,9 @@
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber;
 using Google.Cloud.PubSub.V1;
 using Microsoft.Extensions.Logging;
 
-namespace Gcp.PubSub.Poc.Infrastructure.PubSub
+namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 {
     public class PubSubSubscriberHandle : IPubSubSubscriberHandle
     {

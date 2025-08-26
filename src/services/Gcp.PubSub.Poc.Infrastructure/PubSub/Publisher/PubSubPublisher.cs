@@ -1,7 +1,8 @@
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher;
 using Microsoft.Extensions.Logging;
 
-namespace Gcp.PubSub.Poc.Infrastructure.PubSub
+namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
 {
     public class PubSubPublisher : IPubSubPublisher
     {

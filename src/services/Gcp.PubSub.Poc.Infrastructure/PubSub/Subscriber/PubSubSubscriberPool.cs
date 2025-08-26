@@ -1,11 +1,12 @@
 using System.Collections.Concurrent;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Infrastructure.PubSub
+namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 {
     public class PubSubSubscriberPool : IPubSubSubscriberPool
     {

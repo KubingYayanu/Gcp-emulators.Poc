@@ -1,6 +1,6 @@
 using Google.Cloud.PubSub.V1;
 
-namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
+namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
 {
     public interface IPubSubPublisherPool : IAsyncDisposable
     {

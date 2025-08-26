@@ -1,6 +1,10 @@
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber;
 using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Gcp.PubSub.Poc.Infrastructure.PubSub;
+using Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher;
+using Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

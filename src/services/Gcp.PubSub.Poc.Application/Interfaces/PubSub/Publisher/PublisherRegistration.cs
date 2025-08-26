@@ -1,4 +1,4 @@
-namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
+namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
 {
     /// <summary>
     /// Publisher Registration 跟踪器

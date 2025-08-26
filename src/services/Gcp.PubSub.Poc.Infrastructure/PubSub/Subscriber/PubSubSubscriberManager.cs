@@ -1,9 +1,10 @@
 using System.Collections.Concurrent;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Gcp.PubSub.Poc.Infrastructure.PubSub
+namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 {
     public class PubSubSubscriberManager : IPubSubSubscriberManager
     {

@@ -1,5 +1,6 @@
 using Gcp.PubSub.Poc.Application.Interfaces.Jobs;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher;
 using Gcp.PubSub.Poc.Domain.Enums;
 using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Microsoft.Extensions.Logging;
