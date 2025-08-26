@@ -11,7 +11,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
         /// 否則會報錯
         /// </summary>
         public string? Host => Emulated
-            ? Environment.GetEnvironmentVariable("PUBSUB_EMULATOR_HOST")
-            : null;
+            ? null
+            : Environment.GetEnvironmentVariable("PUBSUB_EMULATOR_HOST");
     }
 }
