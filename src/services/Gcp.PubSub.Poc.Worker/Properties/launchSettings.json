@@ -7,6 +7,20 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local"
       }
+    },
+    "Gcp.PubSub.Poc.PublisherA": {
+      "commandLineArgs": "-j 1",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      }
+    },
+    "Gcp.PubSub.Poc.SubscriberA": {
+      "commandLineArgs": "-j 2",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      }
     }
   }
 }

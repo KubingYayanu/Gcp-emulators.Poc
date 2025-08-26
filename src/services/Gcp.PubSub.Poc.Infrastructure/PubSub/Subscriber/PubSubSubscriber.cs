@@ -33,7 +33,8 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                 subscriberId: _subscriberId,
                 projectId: projectId,
                 subscriptionId: subscriptionId,
-                messageHandler: wrappedHandler);
+                messageHandler: wrappedHandler,
+                cancellationToken: cancellationToken);
 
             // 不要 await StartAsync, 讓它在背景執行
             var startTask = subscriber.StartAsync(async (message, handlerCancellationToken) =>
