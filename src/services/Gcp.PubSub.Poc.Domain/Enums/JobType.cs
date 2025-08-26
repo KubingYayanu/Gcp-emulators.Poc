@@ -2,6 +2,7 @@ namespace Gcp.PubSub.Poc.Domain.Enums
 {
     public enum JobType
     {
-        PublisherA = 1
+        PublisherA = 1,
+        SubscriberA = 2
     }
 }

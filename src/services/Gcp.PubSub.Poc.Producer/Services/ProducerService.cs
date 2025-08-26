@@ -24,40 +24,47 @@ namespace Gcp.PubSub.Poc.Producer.Services
 
         public async Task PublishMessagesAsync(CancellationToken cancellationToken = default)
         {
-            var config = new PubSubTaskConfig
+            try
             {
-                ProjectId = _options.PublisherA.ProjectId,
-                TopicId = _options.PublisherA.TopicId,
-                SubscriptionId = _options.PublisherA.SubscriptionId,
-            };
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                if (Console.KeyAvailable)
+                var config = new PubSubTaskConfig
                 {
-                    var message = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(message))
+                    ProjectId = _options.PublisherA.ProjectId,
+                    TopicId = _options.PublisherA.TopicId,
+                    SubscriptionId = _options.PublisherA.SubscriptionId,
+                };
+
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    if (Console.KeyAvailable)
                     {
-                        continue;
-                    }
-
-                    await _pubSubPublisher.PublishAsync(
-                        config: config,
-                        payload: new PubSubPayload
+                        var message = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(message))
                         {
-                            Message = message,
-                            Attributes = new Dictionary<string, string>
+                            continue;
+                        }
+
+                        await _pubSubPublisher.PublishAsync(
+                            config: config,
+                            payload: new PubSubPayload
                             {
-                                { "timestamp", DateTime.UtcNow.ToString("o") },
-                                { "source", "console" }
-                            }
-                        },
-                        cancellationToken: cancellationToken);
+                                Message = message,
+                                Attributes = new Dictionary<string, string>
+                                {
+                                    { "timestamp", DateTime.UtcNow.ToString("o") },
+                                    { "source", "console" }
+                                }
+                            },
+                            cancellationToken: cancellationToken);
 
-                    _logger.LogInformation("Published message: {Message}", message);
+                        _logger.LogInformation("Published message: {Message}", message);
 
-                    await Task.Delay(300, cancellationToken);
+                        await Task.Delay(300, cancellationToken);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ProducerService occurred an error");
             }
         }
     }

@@ -5,5 +5,7 @@ namespace Gcp.PubSub.Poc.Domain.Queues.Options
         public const string SectionName = "Queues:Worker";
 
         public QueueSection PublisherA { get; set; }
+
+        public QueueSection SubscriberA { get; set; }
     }
 }
