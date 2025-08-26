@@ -1,7 +1,6 @@
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher;
 using Google.Cloud.PubSub.V1;
-using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 
 namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
@@ -34,21 +33,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
 
         public string TopicId { get; }
 
-        public async Task<string> PublishAsync(
-            PubSubPublisherPayload payload,
-            CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(PubsubMessage payload)
         {
-            var pubsubMessage = new PubsubMessage
-            {
-                Data = ByteString.CopyFromUtf8(payload.Message)
-            };
-
-            foreach (var attr in payload.Attributes)
-            {
-                pubsubMessage.Attributes[attr.Key] = attr.Value;
-            }
-
-            var messageId = await _publisher.PublishAsync(pubsubMessage);
+            var messageId = await _publisher.PublishAsync(payload);
             return messageId;
         }
 

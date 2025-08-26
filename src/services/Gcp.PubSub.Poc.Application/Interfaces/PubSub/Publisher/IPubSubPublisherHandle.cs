@@ -1,3 +1,5 @@
+using Google.Cloud.PubSub.V1;
+
 namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
 {
     public interface IPubSubPublisherHandle : IAsyncDisposable
@@ -8,9 +10,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
 
         string TopicId { get; }
 
-        Task<string> PublishAsync(
-            PubSubPublisherPayload payload,
-            CancellationToken cancellationToken = default);
+        Task<string> PublishAsync(PubsubMessage payload);
 
         Task ShutdownAsync(CancellationToken cancellationToken = default);
     }

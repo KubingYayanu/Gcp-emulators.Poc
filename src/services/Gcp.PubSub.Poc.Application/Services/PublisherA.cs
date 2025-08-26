@@ -52,17 +52,20 @@ namespace Gcp.PubSub.Poc.Application.Services
                             continue;
                         }
 
+
+                        var extraAttributes = new Dictionary<string, string>
+                        {
+                            { "source", "worker" },
+                            { "timestamp", DateTimeOffset.UtcNow.ToString("o") }
+                        };
+                        var envelope = new PubSubEnvelope<string>(
+                            data: message,
+                            eventType: "order.created",
+                            schemaVersion: "v1",
+                            extraAttributes: extraAttributes);
+
                         await publisherHandle.PublishAsync(
-                            payload: new PubSubPublisherPayload
-                            {
-                                Message = message,
-                                Attributes = new Dictionary<string, string>
-                                {
-                                    { "timestamp", DateTime.UtcNow.ToString("o") },
-                                    { "source", "console" }
-                                }
-                            },
-                            cancellationToken: cancellationToken);
+                            payload: envelope.ToPubsubMessage());
 
                         _logger.LogInformation("Published message: {Message}", message);
 
