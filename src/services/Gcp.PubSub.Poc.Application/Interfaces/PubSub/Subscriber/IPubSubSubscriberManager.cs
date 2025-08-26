@@ -9,13 +9,13 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
         /// </summary>
         /// <param name="subscriberName">給訂閱一個名稱以便管理</param>
         /// <param name="config"></param>
-        /// <param name="handleMessageAsync"></param>
+        /// <param name="messageHandler"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IPubSubSubscriberHandle> StartSubscriberAsync(
             string subscriberName,
             PubSubTaskConfig config,
-            Func<PubSubPayload, CancellationToken, Task> handleMessageAsync,
+            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default);
 
         Task StopSubscriberAsync(

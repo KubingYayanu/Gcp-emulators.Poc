@@ -7,7 +7,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
     {
         public string SubscriberId { get; set; }
         
-        public Func<PubSubPayload, CancellationToken, Task> MessageHandler { get; set; }
+        public Func<PubSubSubscriberPayload, CancellationToken, Task> MessageHandler { get; set; }
         
         public DateTimeOffset RegisteredAt { get; set; }
     }

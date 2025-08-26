@@ -53,7 +53,7 @@ namespace Gcp.PubSub.Poc.Application.Services
                         }
 
                         await publisherHandle.PublishAsync(
-                            payload: new PubSubPayload
+                            payload: new PubSubPublisherPayload
                             {
                                 Message = message,
                                 Attributes = new Dictionary<string, string>

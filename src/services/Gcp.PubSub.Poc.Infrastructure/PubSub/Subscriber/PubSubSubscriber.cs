@@ -22,12 +22,12 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 
         public async Task<IPubSubSubscriberHandle> StartAsync(
             PubSubTaskConfig config,
-            Func<PubSubPayload, CancellationToken, Task> handleMessageAsync,
+            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default)
         {
             var projectId = config.ProjectId;
             var subscriptionId = config.SubscriptionId;
-            var wrappedHandler = CreateWrappedHandler(handleMessageAsync, config);
+            var wrappedHandler = CreateWrappedHandler(messageHandler, config);
 
             var subscriber = await _subscriberPool.GetOrCreateSubscriberAsync(
                 subscriberId: _subscriberId,
@@ -42,13 +42,14 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             {
                 try
                 {
-                    var pubSubPayload = new PubSubPayload
+                    var payload = new PubSubSubscriberPayload
                     {
+                        MessageId = message.MessageId,
                         Message = message.Data.ToStringUtf8(),
                         Attributes = new Dictionary<string, string>(message.Attributes)
                     };
 
-                    await wrappedHandler(pubSubPayload, handlerCancellationToken);
+                    await wrappedHandler(payload, handlerCancellationToken);
                     return SubscriberClient.Reply.Ack;
                 }
                 catch (Exception ex)
@@ -82,8 +83,8 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                 logger: _logger);
         }
 
-        private Func<PubSubPayload, CancellationToken, Task> CreateWrappedHandler(
-            Func<PubSubPayload, CancellationToken, Task> originalHandler,
+        private Func<PubSubSubscriberPayload, CancellationToken, Task> CreateWrappedHandler(
+            Func<PubSubSubscriberPayload, CancellationToken, Task> originalHandler,
             PubSubTaskConfig config)
         {
             return async (payload, cancellationToken) =>

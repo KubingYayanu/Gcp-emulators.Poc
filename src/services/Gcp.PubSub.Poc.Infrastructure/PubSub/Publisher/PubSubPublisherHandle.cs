@@ -35,7 +35,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
         public string TopicId { get; }
 
         public async Task<string> PublishAsync(
-            PubSubPayload payload,
+            PubSubPublisherPayload payload,
             CancellationToken cancellationToken = default)
         {
             var pubsubMessage = new PubsubMessage

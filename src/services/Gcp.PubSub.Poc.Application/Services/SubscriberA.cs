@@ -41,7 +41,7 @@ namespace Gcp.PubSub.Poc.Application.Services
                 await _subscriberManager.StartSubscriberAsync(
                     subscriberName: SubscriberName,
                     config: config,
-                    handleMessageAsync: (payload, ct) => ProcessMessage(SubscriberName, payload, ct),
+                    messageHandler: (payload, ct) => ProcessMessage(SubscriberName, payload, ct),
                     cancellationToken: cancellationToken);
             }
             catch (Exception ex)
@@ -52,10 +52,10 @@ namespace Gcp.PubSub.Poc.Application.Services
 
         private async Task ProcessMessage(
             string subscriberName,
-            PubSubPayload payload,
+            PubSubSubscriberPayload subscriberPayload,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[{Subscriber}] Processing: {Message}", subscriberName, payload.Message);
+            _logger.LogInformation("[{Subscriber}] Processing: {Message}", subscriberName, subscriberPayload.Message);
             await Task.Delay(100, cancellationToken);
         }
     }

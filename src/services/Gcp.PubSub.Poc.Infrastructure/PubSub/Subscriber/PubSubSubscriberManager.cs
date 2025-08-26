@@ -27,7 +27,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
         public async Task<IPubSubSubscriberHandle> StartSubscriberAsync(
             string subscriberName,
             PubSubTaskConfig config,
-            Func<PubSubPayload, CancellationToken, Task> handleMessageAsync,
+            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default)
         {
             if (_disposed)
@@ -46,7 +46,10 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 
                 // 創建新的 Subscriber 實例 (Transient)
                 var subscriber = _serviceProvider.GetRequiredService<IPubSubSubscriber>();
-                var subscriberHandle = await subscriber.StartAsync(config, handleMessageAsync, cancellationToken);
+                var subscriberHandle = await subscriber.StartAsync(
+                    config: config,
+                    messageHandler: messageHandler,
+                    cancellationToken: cancellationToken);
 
                 _subscribers[subscriberName] = subscriberHandle;
 

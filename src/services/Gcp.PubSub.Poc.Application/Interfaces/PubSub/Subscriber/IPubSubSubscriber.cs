@@ -6,7 +6,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
         /// 啟動背景訂閱工作
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="handleMessageAsync">
+        /// <param name="messageHandler">
         /// 1. 若工作太長，建議把消息丟到背景 job/queue 處理，再 ack 掉 Pub/Sub 訊息
         /// 2. 冪等處理
         /// 3. 調整 AckDeadline
@@ -15,7 +15,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
         /// <returns></returns>
         Task<IPubSubSubscriberHandle> StartAsync(
             PubSubTaskConfig config,
-            Func<PubSubPayload, CancellationToken, Task> handleMessageAsync,
+            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default);
     }
 }
