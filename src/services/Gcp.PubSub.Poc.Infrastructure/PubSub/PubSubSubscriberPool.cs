@@ -10,7 +10,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
     public class PubSubSubscriberPool : IPubSubSubscriberPool
     {
         private readonly ConcurrentDictionary<string, SubscriberClient> _subscribers = new();
-        private readonly ConcurrentDictionary<string, ConsumerRegistration> _registrations = new();
+        private readonly ConcurrentDictionary<string, SubscriberRegistration> _registrations = new();
         private readonly SemaphoreSlim _lock;
         private readonly PubSubOptions _options;
         private readonly ILogger<PubSubSubscriberPool> _logger;
@@ -35,27 +35,28 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             : _options.Endpoint;
 
         public async Task<SubscriberClient> GetOrCreateSubscriberAsync(
-            string consumerId,
+            string subscriberId,
             string projectId,
             string subscriptionId,
-            Func<PubSubPayload, CancellationToken, Task> handler)
+            Func<PubSubPayload, CancellationToken, Task> messageHandler,
+            CancellationToken cancellationToken = default)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PubSubSubscriberPool));
 
-            var subscriberKey = $"{consumerId}:{projectId}:{subscriptionId}";
+            var subscriberKey = $"{subscriberId}:{projectId}:{subscriptionId}";
             var registrationKey = subscriberKey;
 
-            await _lock.WaitAsync();
+            await _lock.WaitAsync(cancellationToken);
             try
             {
                 // 檢查是否已經註冊
                 if (_registrations.ContainsKey(registrationKey))
                 {
                     throw new InvalidOperationException(
-                        $"Consumer {consumerId} already registered for {projectId}:{subscriptionId}");
+                        $"Subscriber {subscriberId} already registered for ProjectId: {projectId}, SubscriptionId:{subscriptionId}");
                 }
 
-                // 為每個 Consumer 創建獨立的 Subscriber
+                // 為每個 SubscriberKey 創建獨立的 Subscriber
                 if (!_subscribers.TryGetValue(subscriberKey, out var subscriber))
                 {
                     var subscriptionName = SubscriptionName
@@ -75,16 +76,16 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                         EmulatorDetection = EmulatorDetection
                     };
 
-                    subscriber = await builder.BuildAsync();
+                    subscriber = await builder.BuildAsync(cancellationToken);
                     _subscribers[subscriberKey] = subscriber;
                 }
 
-                // 註冊 Consumer
-                _registrations[registrationKey] = new ConsumerRegistration
+                // 註冊 Subscriber
+                _registrations[registrationKey] = new SubscriberRegistration
                 {
-                    ConsumerId = consumerId,
-                    Handler = handler,
-                    RegisteredAt = DateTime.UtcNow
+                    SubscriberId = subscriberId,
+                    MessageHandler = messageHandler,
+                    RegisteredAt = DateTimeOffset.UtcNow
                 };
 
                 return subscriber;
@@ -95,12 +96,16 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             }
         }
 
-        public async Task RemoveSubscriberAsync(string consumerId, string projectId, string subscriptionId)
+        public async Task RemoveSubscriberAsync(
+            string subscriberId,
+            string projectId,
+            string subscriptionId,
+            CancellationToken cancellationToken = default)
         {
-            var subscriberKey = $"{consumerId}:{projectId}:{subscriptionId}";
+            var subscriberKey = $"{subscriberId}:{projectId}:{subscriptionId}";
             var registrationKey = subscriberKey;
 
-            await _lock.WaitAsync();
+            await _lock.WaitAsync(cancellationToken);
             try
             {
                 // 移除註冊
@@ -116,7 +121,11 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Error stopping subscriber for {SubscriberKey}", subscriberKey);
+                        _logger.LogError(
+                            exception: ex,
+                            message: "Error stopping subscriber. SubscriberId: {SubscriberId}, "
+                                     + "ProjectId: {ProjectId}, SubscriptionId: {SubscriptionId}",
+                            args: [subscriberId, projectId, subscriptionId]);
                     }
                 }
             }
@@ -136,7 +145,16 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             await _lock.WaitAsync();
             try
             {
-                foreach (var subscriber in _subscribers.Values)
+                if (_disposed) return;
+
+                _disposed = true;
+
+                // 清理所有 Subscribers
+                var subscribers = _subscribers.Values.ToList();
+                _subscribers.Clear();
+                _registrations.Clear();
+
+                var disposeTasks = subscribers.Select(async subscriber =>
                 {
                     try
                     {
@@ -145,13 +163,13 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Error disposing subscriber");
+                        _logger.LogError(
+                            exception: ex,
+                            message: "Error disposing subscriber");
                     }
-                }
+                });
 
-                _subscribers.Clear();
-                _registrations.Clear();
-                _disposed = true;
+                await Task.WhenAll(disposeTasks);
             }
             finally
             {

@@ -9,8 +9,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<PubSubPublisherManager> _logger;
-        private readonly ConcurrentDictionary<string, IPublisherHandle> _publishers = new();
-        private readonly SemaphoreSlim _lock = new(1, 1);
+        private readonly ConcurrentDictionary<string, IPubSubPublisherHandle> _publishers = new();
+        private readonly SemaphoreSlim _lock;
+        private readonly int _maxSize = 1;
         private volatile bool _disposed;
 
         public PubSubPublisherManager(
@@ -19,11 +20,12 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _lock = new SemaphoreSlim(_maxSize, _maxSize);
         }
 
         public int ActivePublisherCount => _publishers.Count;
 
-        public async Task<IPublisherHandle> StartPublisherAsync(
+        public async Task<IPubSubPublisherHandle> StartPublisherAsync(
             string publisherName,
             PubSubTaskConfig config,
             CancellationToken cancellationToken = default)
@@ -42,22 +44,23 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                     throw new InvalidOperationException($"Publisher '{publisherName}' is already active");
                 }
 
-                // 創建新的 Producer 實例(Transient)
-                var producer = _serviceProvider.GetRequiredService<IPubSubPublisher>();
-                var handle = await producer.StartAsync(config, cancellationToken);
+                // 創建新的 Publisher 實例 (Transient)
+                var publisher = _serviceProvider.GetRequiredService<IPubSubPublisher>();
+                var publisherHandle = await publisher.StartAsync(config, cancellationToken);
 
-                _publishers[publisherName] = handle;
+                _publishers[publisherName] = publisherHandle;
 
                 _logger.LogInformation(
-                    message: "Started managed publisher '{PublisherName}' for {ProjectId}:{TopicId}",
+                    message: "Started managed Publisher Handle '{PublisherName}' for "
+                             + "ProjectId: {ProjectId}, TopicId: {TopicId}",
                     args:
                     [
                         publisherName,
                         config.ProjectId,
-                        config.SubscriptionId
+                        config.TopicId
                     ]);
 
-                return handle;
+                return publisherHandle;
             }
             finally
             {
@@ -77,14 +80,14 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                 {
                     await handle.ShutdownAsync(cancellationToken);
                     _logger.LogInformation(
-                        message: "Stopped managed publisher '{PublisherName}'",
+                        message: "Stopped managed Publisher Handle '{PublisherName}'",
                         args: publisherName);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(
                         exception: ex,
-                        message: "Error stopping managed publisher '{PublisherName}'",
+                        message: "Error stopping managed Publisher Handle '{PublisherName}'",
                         args: publisherName);
                     throw;
                 }
@@ -98,15 +101,15 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 
             await Task.WhenAll(stopTasks);
 
-            _logger.LogInformation("Stopped all {Count} managed publishers", publisherNames.Count);
+            _logger.LogInformation("Stopped all {Count} managed Publisher Handles", publisherNames.Count);
         }
 
-        public IPublisherHandle? GetPublisherHandle(string publisherName)
+        public IPubSubPublisherHandle? GetPublisherHandle(string publisherName)
         {
             return _publishers.GetValueOrDefault(publisherName);
         }
 
-        public IEnumerable<IPublisherHandle> GetActivePublisherHandles()
+        public IEnumerable<IPubSubPublisherHandle> GetActivePublisherHandles()
         {
             return _publishers.Values.ToList();
         }
@@ -122,7 +125,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during disposal");
+                _logger.LogError(ex, "Error disposing Publisher Handles");
             }
             finally
             {

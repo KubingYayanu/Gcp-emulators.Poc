@@ -7,7 +7,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
     {
         private readonly IPubSubPublisherPool _publisherPool;
         private readonly ILogger<PubSubPublisher> _logger;
-        private readonly string _producerId;
+        private readonly string _publisherId;
 
         public PubSubPublisher(
             IPubSubPublisherPool publisherPool,
@@ -15,32 +15,34 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
         {
             _publisherPool = publisherPool;
             _logger = logger;
-            _producerId = Guid.NewGuid().ToString("N")[..8];
+            _publisherId = Guid.NewGuid().ToString("N")[..8];
         }
 
-        public async Task<IPublisherHandle> StartAsync(
+        public async Task<IPubSubPublisherHandle> StartAsync(
             PubSubTaskConfig config,
             CancellationToken cancellationToken = default)
         {
             var publisher = await _publisherPool.GetOrCreatePublisherAsync(
-                producerId: _producerId,
+                publisherId: _publisherId,
                 projectId: config.ProjectId,
-                topicId: config.TopicId);
+                topicId: config.TopicId,
+                cancellationToken: cancellationToken);
 
             _logger.LogInformation(
-                message: "Producer {ProducerId} started for publication {ProjectId}:{TopicId}",
+                message: "Publisher {PublisherId} started for publication. "
+                         + "ProjectId: {ProjectId}, TopicId: {TopicId}",
                 args:
                 [
-                    _producerId,
+                    _publisherId,
                     config.ProjectId,
                     config.TopicId
                 ]);
 
-            return new PublisherHandle(
+            return new PubSubPublisherHandle(
+                publisherId: _publisherId,
+                config: config,
                 publisherPool: _publisherPool,
                 publisher: publisher,
-                producerId: _producerId,
-                config: config,
                 logger: _logger);
         }
     }

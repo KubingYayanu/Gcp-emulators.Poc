@@ -10,7 +10,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
     public class PubSubPublisherPool : IPubSubPublisherPool
     {
         private readonly ConcurrentDictionary<string, PublisherClient> _publishers = new();
-        private readonly ConcurrentDictionary<string, ProducerRegistration> _registrations = new();
+        private readonly ConcurrentDictionary<string, PublisherRegistration> _registrations = new();
         private readonly SemaphoreSlim _lock;
         private readonly PubSubOptions _options;
         private readonly ILogger<PubSubPublisherPool> _logger;
@@ -35,26 +35,27 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             : _options.Endpoint;
 
         public async Task<PublisherClient> GetOrCreatePublisherAsync(
-            string producerId,
+            string publisherId,
             string projectId,
-            string topicId)
+            string topicId,
+            CancellationToken cancellationToken = default)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PubSubPublisherPool));
 
-            var publisherKey = $"{producerId}:{projectId}:{topicId}";
+            var publisherKey = $"{publisherId}:{projectId}:{topicId}";
             var registrationKey = publisherKey;
 
-            await _lock.WaitAsync();
+            await _lock.WaitAsync(cancellationToken);
             try
             {
                 // 檢查是否已經註冊
                 if (_registrations.ContainsKey(registrationKey))
                 {
                     throw new InvalidOperationException(
-                        $"Producer {producerId} already registered for {projectId}:{topicId}");
+                        $"Publisher {publisherId} already registered for ProjectId: {projectId}, TopicId: {topicId}");
                 }
 
-                // 為每個 Producer 創建獨立的 Publisher
+                // 為每個 PublisherKey 創建獨立的 Publisher
                 if (!_publishers.TryGetValue(publisherKey, out var publisher))
                 {
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
@@ -65,15 +66,15 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                         EmulatorDetection = EmulatorDetection
                     };
 
-                    publisher = await builder.BuildAsync();
+                    publisher = await builder.BuildAsync(cancellationToken);
                     _publishers[publisherKey] = publisher;
                 }
 
-                // 註冊 Producer
-                _registrations[registrationKey] = new ProducerRegistration
+                // 註冊 Publisher
+                _registrations[registrationKey] = new PublisherRegistration
                 {
-                    ProducerId = producerId,
-                    RegisteredAt = DateTime.UtcNow
+                    PublisherId = publisherId,
+                    RegisteredAt = DateTimeOffset.UtcNow
                 };
 
                 return publisher;
@@ -85,14 +86,15 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
         }
 
         public async Task RemovePublisherAsync(
-            string producerId,
+            string publisherId,
             string projectId,
-            string topicId)
+            string topicId,
+            CancellationToken cancellationToken = default)
         {
-            var publisherKey = $"{producerId}:{projectId}:{topicId}";
+            var publisherKey = $"{publisherId}:{projectId}:{topicId}";
             var registrationKey = publisherKey;
 
-            await _lock.WaitAsync();
+            await _lock.WaitAsync(cancellationToken);
             try
             {
                 // 移除註冊
@@ -108,7 +110,11 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Error stopping publisher for {PublisherKey}", publisherKey);
+                        _logger.LogError(
+                            exception: ex,
+                            message: "Error stopping publisher. PublisherId: {PublisherId}, "
+                                     + "ProjectId: {ProjectId}, TopicId: {TopicId}",
+                            args: [publisherId, projectId, topicId]);
                     }
                 }
             }
@@ -128,7 +134,16 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             await _lock.WaitAsync();
             try
             {
-                foreach (var publisher in _publishers.Values)
+                if (_disposed) return;
+
+                _disposed = true;
+
+                // 清理所有 Publishers
+                var publishers = _publishers.Values.ToList();
+                _publishers.Clear();
+                _registrations.Clear();
+
+                var disposeTasks = publishers.Select(async publisher =>
                 {
                     try
                     {
@@ -137,13 +152,13 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Error disposing publisher");
+                        _logger.LogError(
+                            exception: ex,
+                            message: "Error disposing publisher");
                     }
-                }
+                });
 
-                _publishers.Clear();
-                _registrations.Clear();
-                _disposed = true;
+                await Task.WhenAll(disposeTasks);
             }
             finally
             {

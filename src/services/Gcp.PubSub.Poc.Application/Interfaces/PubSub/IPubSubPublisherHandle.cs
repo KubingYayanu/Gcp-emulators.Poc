@@ -1,8 +1,8 @@
 namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
-    public interface IPublisherHandle : IAsyncDisposable
+    public interface IPubSubPublisherHandle : IAsyncDisposable
     {
-        string ProducerId { get; }
+        string PublisherId { get; }
 
         string ProjectId { get; }
 

@@ -5,29 +5,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 {
-    public class PublisherHandle : IPublisherHandle
+    public class PubSubPublisherHandle : IPubSubPublisherHandle
     {
         private readonly IPubSubPublisherPool _publisherPool;
         private readonly PublisherClient _publisher;
         private readonly ILogger _logger;
         private volatile bool _disposed;
 
-        public PublisherHandle(
+        public PubSubPublisherHandle(
+            string publisherId,
+            PubSubTaskConfig config,
             IPubSubPublisherPool publisherPool,
             PublisherClient publisher,
-            string producerId,
-            PubSubTaskConfig config,
             ILogger logger)
         {
-            _publisherPool = publisherPool;
-            _publisher = publisher;
-            ProducerId = producerId;
+            PublisherId = publisherId;
             ProjectId = config.ProjectId;
             TopicId = config.TopicId;
+            _publisherPool = publisherPool;
+            _publisher = publisher;
             _logger = logger;
         }
 
-        public string ProducerId { get; }
+        public string PublisherId { get; }
 
         public string ProjectId { get; }
 
@@ -58,10 +58,11 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             try
             {
                 _logger.LogInformation(
-                    message: "Shutting down publication for producer {ProducerId}, publisher {ProjectId}:{TopicId}",
+                    message: "Shutting down publication for PublisherId: {PublisherId}, "
+                             + "ProjectId: {ProjectId}, TopicId: {TopicId}",
                     args:
                     [
-                        ProducerId,
+                        PublisherId,
                         ProjectId,
                         TopicId
                     ]);
@@ -70,13 +71,18 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
                 await _publisher.ShutdownAsync(TimeSpan.FromSeconds(30));
 
                 // 清理 pool 中的資源
-                await _publisherPool.RemovePublisherAsync(ProducerId, ProjectId, TopicId);
+                await _publisherPool.RemovePublisherAsync(
+                    publisherId: PublisherId,
+                    projectId: ProjectId,
+                    topicId: TopicId,
+                    cancellationToken: cancellationToken);
 
                 _logger.LogInformation(
-                    message: "Stopped publication for producer {ProducerId}, publisher {ProjectId}:{TopicId}",
+                    message: "Stopped publication for PublisherId: {PublisherId}, "
+                             + "ProjectId: {ProjectId}, TopicId: {TopicId}",
                     args:
                     [
-                        ProducerId,
+                        PublisherId,
                         ProjectId,
                         TopicId
                     ]);
@@ -85,8 +91,14 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
             {
                 _logger.LogError(
                     exception: ex,
-                    message: "Error shutting down publication for producer {ProducerId}",
-                    args: ProducerId);
+                    message: "Error shutting down publication for PublisherId: {ProducerId}"
+                             + "ProjectId: {ProjectId}, TopicId: {TopicId}",
+                    args:
+                    [
+                        PublisherId,
+                        ProjectId,
+                        TopicId
+                    ]);
                 throw;
             }
         }

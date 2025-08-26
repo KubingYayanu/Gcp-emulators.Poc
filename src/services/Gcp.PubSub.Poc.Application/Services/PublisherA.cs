@@ -22,6 +22,8 @@ namespace Gcp.PubSub.Poc.Application.Services
             _logger = logger;
         }
 
+        private string PublisherName => nameof(PublisherA);
+
         public JobType JobType => JobType.PublisherA;
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -35,9 +37,8 @@ namespace Gcp.PubSub.Poc.Application.Services
                     SubscriptionId = _options.SubscriptionId,
                 };
 
-                var publisherName = nameof(PublisherA);
                 var publisherHandle = await _publisherManager.StartPublisherAsync(
-                    publisherName: publisherName,
+                    publisherName: PublisherName,
                     config: config,
                     cancellationToken: cancellationToken);
 
@@ -72,6 +73,12 @@ namespace Gcp.PubSub.Poc.Application.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while running PublisherA job");
+            }
+            finally
+            {
+                await _publisherManager.StopPublisherAsync(
+                    publisherName: PublisherName,
+                    cancellationToken: cancellationToken);
             }
         }
     }

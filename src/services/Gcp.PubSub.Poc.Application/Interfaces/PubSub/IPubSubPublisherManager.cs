@@ -4,7 +4,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
     {
         int ActivePublisherCount { get; }
 
-        Task<IPublisherHandle> StartPublisherAsync(
+        Task<IPubSubPublisherHandle> StartPublisherAsync(
             string publisherName, // 給發布一個名稱以便管理
             PubSubTaskConfig config,
             CancellationToken cancellationToken = default);
@@ -15,8 +15,8 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 
         Task StopAllPublishersAsync(CancellationToken cancellationToken = default);
 
-        IPublisherHandle? GetPublisherHandle(string publisherName);
+        IPubSubPublisherHandle? GetPublisherHandle(string publisherName);
 
-        IEnumerable<IPublisherHandle> GetActivePublisherHandles();
+        IEnumerable<IPubSubPublisherHandle> GetActivePublisherHandles();
     }
 }

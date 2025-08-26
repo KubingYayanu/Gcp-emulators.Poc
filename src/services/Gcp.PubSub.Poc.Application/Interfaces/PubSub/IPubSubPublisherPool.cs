@@ -5,13 +5,15 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
     public interface IPubSubPublisherPool : IAsyncDisposable
     {
         Task<PublisherClient> GetOrCreatePublisherAsync(
-            string producerId,
+            string publisherId,
             string projectId,
-            string topicId);
+            string topicId,
+            CancellationToken cancellationToken = default);
         
         Task RemovePublisherAsync(
-            string producerId, 
+            string publisherId, 
             string projectId,
-            string topicId);
+            string topicId,
+            CancellationToken cancellationToken = default);
     }
 }

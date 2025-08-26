@@ -1,8 +1,8 @@
 namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
-    public interface ISubscriptionHandle : IAsyncDisposable
+    public interface IPubSubSubscriberHandle : IAsyncDisposable
     {
-        string ConsumerId { get; }
+        string SubscriberId { get; }
 
         string ProjectId { get; }
 
