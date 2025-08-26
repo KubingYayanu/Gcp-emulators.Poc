@@ -5,21 +5,24 @@
       "commandLineArgs": "-j 1",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local"
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
       }
     },
     "Gcp.PubSub.Poc.PublisherA": {
       "commandLineArgs": "-j 1",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local"
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
       }
     },
     "Gcp.PubSub.Poc.SubscriberA": {
       "commandLineArgs": "-j 2",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local"
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
       }
     }
   }

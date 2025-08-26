@@ -31,10 +31,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             ? EmulatorDetection.EmulatorOnly
             : EmulatorDetection.ProductionOnly;
 
-        private string? Endpoint => EmulatorDetection == EmulatorDetection.EmulatorOnly
-            ? null
-            : _options.Host;
-
         public async Task<SubscriberClient> GetOrCreateSubscriberAsync(
             string subscriberId,
             string projectId,
@@ -71,7 +67,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 
                     var builder = new SubscriberClientBuilder
                     {
-                        Endpoint = Endpoint,
+                        Endpoint = _options.Host,
                         SubscriptionName = subscriptionName,
                         Settings = settings,
                         EmulatorDetection = EmulatorDetection

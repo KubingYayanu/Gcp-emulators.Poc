@@ -31,10 +31,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
             ? EmulatorDetection.EmulatorOnly
             : EmulatorDetection.ProductionOnly;
 
-        private string? Endpoint => EmulatorDetection == EmulatorDetection.EmulatorOnly
-            ? null
-            : _options.Host;
-
         public async Task<PublisherClient> GetOrCreatePublisherAsync(
             string publisherId,
             string projectId,
@@ -62,7 +58,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
                     var builder = new PublisherClientBuilder
                     {
-                        Endpoint = Endpoint,
+                        Endpoint = _options.Host,
                         TopicName = topicName,
                         EmulatorDetection = EmulatorDetection
                     };

@@ -44,16 +44,12 @@ namespace Gcp.PubSub.Poc.Application.Services
                     config: config,
                     handleMessageAsync: (payload, ct) => ProcessMessage(SubscriberName, payload, ct),
                     cancellationToken: cancellationToken);
+
+                // TODO: 由 StopHandler 執行 StopSubscriberAsync
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while running SubscriberA job");
-            }
-            finally
-            {
-                await _subscriberManager.StopSubscriberAsync(
-                    subscriberName: SubscriberName,
-                    cancellationToken: cancellationToken);
             }
         }
 
