@@ -78,6 +78,7 @@ namespace Gcp.PubSub.Poc.Application.Services
             }
             finally
             {
+                // TODO: 由 StopHandler 執行 StopPublisherAsync
                 await _publisherManager.StopPublisherAsync(
                     publisherName: PublisherName,
                     cancellationToken: cancellationToken);
