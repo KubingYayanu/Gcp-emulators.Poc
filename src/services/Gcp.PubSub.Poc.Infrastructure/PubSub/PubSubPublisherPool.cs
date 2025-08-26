@@ -32,7 +32,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub
 
         private string? Endpoint => EmulatorDetection == EmulatorDetection.EmulatorOnly
             ? null
-            : _options.Endpoint;
+            : _options.Host;
 
         public async Task<PublisherClient> GetOrCreatePublisherAsync(
             string publisherId,

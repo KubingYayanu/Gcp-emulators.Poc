@@ -1,4 +1,5 @@
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
+using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Gcp.PubSub.Poc.Infrastructure.PubSub;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,18 +12,27 @@ namespace Gcp.PubSub.Poc.Infrastructure.IoC
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            SetupQueues(services, configuration);
+            AddPubSubHelper(services, configuration);
+
+            return services;
+        }
+
+        private static void SetupQueues(IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<WorkerQueueOptions>(options =>
+            {
+                configuration.GetSection(WorkerQueueOptions.SectionName).Bind(options);
+            });
+        }
+
+        private static void AddPubSubHelper(IServiceCollection services, IConfiguration configuration)
+        {
             services.Configure<PubSubOptions>(options =>
             {
                 configuration.GetSection(PubSubOptions.GcpPubSub).Bind(options);
             });
 
-            AddPubSubHelper(services);
-
-            return services;
-        }
-
-        private static void AddPubSubHelper(IServiceCollection services)
-        {
             // Producer
             services.AddSingleton<IPubSubPublisherPool, PubSubPublisherPool>();
             services.AddTransient<IPubSubPublisher, PubSubPublisher>();

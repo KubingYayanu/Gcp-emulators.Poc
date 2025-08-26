@@ -5,11 +5,7 @@
       "commandLineArgs": "-j 1",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085",
-        "PUBSUB_PROJECT_ID": "test-project",
-        "PUBSUB_TOPIC_ID": "test-topic",
-        "PUBSUB_SUBSCRIPTION_ID": "test-subscription"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     }
   }

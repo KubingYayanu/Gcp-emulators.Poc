@@ -57,7 +57,7 @@ namespace Gcp.PubSub.Poc.Helpers.V3
 
                     var builder = new SubscriberClientBuilder
                     {
-                        Endpoint = _options.Endpoint,
+                        Endpoint = _options.Host,
                         SubscriptionName = subscriptionName,
                         Settings = settings,
                         EmulatorDetection = EmulatorDetection

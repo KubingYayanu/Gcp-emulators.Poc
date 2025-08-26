@@ -1,4 +1,5 @@
-﻿using Gcp.PubSub.Poc.Helpers;
+﻿using Gcp.PubSub.Poc.Domain.Queues.Options;
+using Gcp.PubSub.Poc.Helpers;
 using Gcp.PubSub.Poc.Helpers.V2;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,12 +9,12 @@ namespace Gcp.PubSub.Poc.Producer.Services
     public class ProducerService : IProducerService
     {
         private readonly IPubSubPublisher _pubSubPublisher;
-        private readonly PubSubOptions _options;
+        private readonly WorkerQueueOptions _options;
         private readonly ILogger<ProducerService> _logger;
 
         public ProducerService(
             IPubSubPublisher pubSubPublisher,
-            IOptions<PubSubOptions> options,
+            IOptions<WorkerQueueOptions> options,
             ILogger<ProducerService> logger)
         {
             _pubSubPublisher = pubSubPublisher;
@@ -25,9 +26,9 @@ namespace Gcp.PubSub.Poc.Producer.Services
         {
             var config = new PubSubTaskConfig
             {
-                ProjectId = _options.ProjectId,
-                TopicId = _options.TopicId,
-                SubscriptionId = _options.SubscriptionId,
+                ProjectId = _options.PublisherA.ProjectId,
+                TopicId = _options.PublisherA.TopicId,
+                SubscriptionId = _options.PublisherA.SubscriptionId,
             };
 
             while (!cancellationToken.IsCancellationRequested)

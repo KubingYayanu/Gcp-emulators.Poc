@@ -14,4 +14,8 @@
       <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Gcp.PubSub.Poc.Domain\Gcp.PubSub.Poc.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

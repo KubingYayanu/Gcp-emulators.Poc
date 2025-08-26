@@ -1,3 +1,4 @@
+using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Gcp.PubSub.Poc.Helpers;
 using Gcp.PubSub.Poc.Helpers.V2;
 using Gcp.PubSub.Poc.Helpers.V3;
@@ -16,18 +17,27 @@ namespace Gcp.PubSub.Poc.IoC
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            SetupQueues(services, configuration);
+            AddPubSubHelper(services, configuration);
+
+            return services;
+        }
+
+        private static void SetupQueues(IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<WorkerQueueOptions>(options =>
+            {
+                configuration.GetSection(WorkerQueueOptions.SectionName).Bind(options);
+            });
+        }
+
+        private static void AddPubSubHelper(IServiceCollection services, IConfiguration configuration)
+        {
             services.Configure<PubSubOptions>(options =>
             {
                 configuration.GetSection(PubSubOptions.GcpPubSub).Bind(options);
             });
 
-            AddPubSubHelper(services);
-
-            return services;
-        }
-
-        private static void AddPubSubHelper(IServiceCollection services)
-        {
             // Producer
             services.AddSingleton<IPubSubPublisherPool, PubSubPublisherPool>();
             services.AddSingleton<IPubSubPublisher, PubSubPublisher>();

@@ -1,6 +1,7 @@
 using Gcp.PubSub.Poc.Application.Interfaces.Jobs;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
 using Gcp.PubSub.Poc.Domain.Enums;
+using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -9,16 +10,16 @@ namespace Gcp.PubSub.Poc.Application.Services
     public class PublisherA : IJobService
     {
         private readonly IPubSubPublisherManager _publisherManager;
-        private readonly PubSubOptions _options;
+        private readonly WorkerQueueOptions _queueOptions;
         private readonly ILogger<PublisherA> _logger;
 
         public PublisherA(
             IPubSubPublisherManager publisherManager,
-            IOptions<PubSubOptions> options,
+            IOptions<WorkerQueueOptions> queueOptions,
             ILogger<PublisherA> logger)
         {
             _publisherManager = publisherManager;
-            _options = options.Value;
+            _queueOptions = queueOptions.Value;
             _logger = logger;
         }
 
@@ -32,9 +33,9 @@ namespace Gcp.PubSub.Poc.Application.Services
             {
                 var config = new PubSubTaskConfig
                 {
-                    ProjectId = _options.ProjectId,
-                    TopicId = _options.TopicId,
-                    SubscriptionId = _options.SubscriptionId,
+                    ProjectId = _queueOptions.PublisherA.ProjectId,
+                    TopicId = _queueOptions.PublisherA.TopicId,
+                    SubscriptionId = _queueOptions.PublisherA.SubscriptionId,
                 };
 
                 var publisherHandle = await _publisherManager.StartPublisherAsync(

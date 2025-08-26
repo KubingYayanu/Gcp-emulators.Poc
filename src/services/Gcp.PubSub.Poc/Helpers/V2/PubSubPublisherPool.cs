@@ -35,7 +35,7 @@ namespace Gcp.PubSub.Poc.Helpers.V2
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
                     var builder = new PublisherClientBuilder
                     {
-                        Endpoint = _options.Endpoint,
+                        Endpoint = _options.Host,
                         TopicName = topicName,
                         EmulatorDetection = EmulatorDetection
                     };

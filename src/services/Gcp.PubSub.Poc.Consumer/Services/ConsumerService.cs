@@ -1,3 +1,4 @@
+using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Gcp.PubSub.Poc.Helpers;
 using Gcp.PubSub.Poc.Helpers.V3;
 using Microsoft.Extensions.Logging;
@@ -8,12 +9,12 @@ namespace Gcp.PubSub.Poc.Consumer.Services
     public class ConsumerService : IConsumerService
     {
         private readonly IPubSubSubscriptionManager _subscriptionManager;
-        private readonly PubSubOptions _options;
+        private readonly WorkerQueueOptions _options;
         private readonly ILogger<ConsumerService> _logger;
 
         public ConsumerService(
             IPubSubSubscriptionManager subscriptionManager,
-            IOptions<PubSubOptions> options,
+            IOptions<WorkerQueueOptions> options,
             ILogger<ConsumerService> logger)
         {
             _subscriptionManager = subscriptionManager;
@@ -25,9 +26,9 @@ namespace Gcp.PubSub.Poc.Consumer.Services
         {
             var config = new PubSubTaskConfig
             {
-                ProjectId = _options.ProjectId,
-                TopicId = _options.TopicId,
-                SubscriptionId = _options.SubscriptionId,
+                ProjectId = _options.PublisherA.ProjectId,
+                TopicId = _options.PublisherA.TopicId,
+                SubscriptionId = _options.PublisherA.SubscriptionId,
             };
 
             var subscriptionName = nameof(ConsumerService);
