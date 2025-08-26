@@ -4,6 +4,7 @@ using Gcp.PubSub.Poc.Domain.Enums;
 using Gcp.PubSub.Poc.Infrastructure.Hosted;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Gcp.PubSub.Poc.Worker.Resolvers
 {
@@ -34,7 +35,8 @@ namespace Gcp.PubSub.Poc.Worker.Resolvers
 
                     var stopHandler = stopHandlers.FirstOrDefault(x => x.JobType == job);
 
-                    return new JobHostedServiceAdapter(jobInstance, stopHandler);
+                    var logger = provider.GetRequiredService<ILogger<JobHostedServiceAdapter>>();
+                    return new JobHostedServiceAdapter(jobInstance, stopHandler, logger);
                 });
             }
         }

@@ -1,5 +1,6 @@
 using Gcp.PubSub.Poc.Application.Interfaces.Jobs;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Gcp.PubSub.Poc.Infrastructure.Hosted
 {
@@ -7,18 +8,24 @@ namespace Gcp.PubSub.Poc.Infrastructure.Hosted
     {
         private readonly IJobService _job;
         private readonly IJobStopHandler? _stopHandler;
+        private readonly ILogger<JobHostedServiceAdapter> _logger;
 
         public JobHostedServiceAdapter(
             IJobService job,
-            IJobStopHandler? stopHandler)
+            IJobStopHandler? stopHandler,
+            ILogger<JobHostedServiceAdapter> logger)
         {
             _job = job;
             _stopHandler = stopHandler;
+            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine($"[Adapter] Starting job: {_job.JobType}");
+            _logger.LogInformation(
+                message: "[Adapter] Starting job: {JobType}",
+                args: _job.JobType);
+
             _job.RunAsync(cancellationToken);
             return Task.CompletedTask;
         }
@@ -31,7 +38,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.Hosted
                 return handler.HandleStopAsync(_job, cancellationToken);
             }
 
-            Console.WriteLine($"[Adapter] No stop handler found for {_job.JobType}. Skipping cleanup.");
+            _logger.LogInformation(
+                message: "[Adapter] No stop handler found for {JobType}. Skipping cleanup",
+                args: _job.JobType);
             return Task.CompletedTask;
         }
     }
