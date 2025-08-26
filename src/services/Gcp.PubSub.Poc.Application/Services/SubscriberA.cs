@@ -32,20 +32,17 @@ namespace Gcp.PubSub.Poc.Application.Services
         {
             try
             {
-                var config = new PubSubTaskConfig
-                {
-                    ProjectId = _queueOptions.SubscriberA.ProjectId,
-                    TopicId = _queueOptions.SubscriberA.TopicId,
-                    SubscriptionId = _queueOptions.SubscriberA.SubscriptionId,
-                };
+                var config = new PubSubTaskConfig(
+                    projectId: _queueOptions.SubscriberA.ProjectId,
+                    topicId: _queueOptions.SubscriberA.TopicId,
+                    subscriptionId: _queueOptions.SubscriberA.SubscriptionId,
+                    subscriberAckDeadline: _queueOptions.SubscriberA.SubscriberAckDeadline);
 
                 await _subscriberManager.StartSubscriberAsync(
                     subscriberName: SubscriberName,
                     config: config,
                     handleMessageAsync: (payload, ct) => ProcessMessage(SubscriberName, payload, ct),
                     cancellationToken: cancellationToken);
-
-                // TODO: 由 StopHandler 執行 StopSubscriberAsync
             }
             catch (Exception ex)
             {

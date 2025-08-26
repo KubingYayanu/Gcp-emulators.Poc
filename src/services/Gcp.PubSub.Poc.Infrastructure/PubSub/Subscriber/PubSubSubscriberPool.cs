@@ -36,6 +36,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             string projectId,
             string subscriptionId,
             Func<PubSubPayload, CancellationToken, Task> messageHandler,
+            long? ackDeadlineSeconds = null,
             CancellationToken cancellationToken = default)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PubSubSubscriberPool));
@@ -59,10 +60,10 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                     var subscriptionName = SubscriptionName
                         .FromProjectSubscription(projectId, subscriptionId);
 
+                    var ackDeadline = ackDeadlineSeconds ?? _options.SubscriberAckDeadline;
                     var settings = new SubscriberClient.Settings
                     {
-                        // TODO: 改為參數傳入
-                        AckDeadline = TimeSpan.FromSeconds(60)
+                        AckDeadline = TimeSpan.FromSeconds(ackDeadline)
                     };
 
                     var builder = new SubscriberClientBuilder

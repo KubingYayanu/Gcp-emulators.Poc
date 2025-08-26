@@ -34,6 +34,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                 projectId: projectId,
                 subscriptionId: subscriptionId,
                 messageHandler: wrappedHandler,
+                ackDeadlineSeconds: config.SubscriberAckDeadline,
                 cancellationToken: cancellationToken);
 
             // 不要 await StartAsync, 讓它在背景執行

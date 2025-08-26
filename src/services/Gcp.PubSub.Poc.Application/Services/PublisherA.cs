@@ -32,12 +32,10 @@ namespace Gcp.PubSub.Poc.Application.Services
         {
             try
             {
-                var config = new PubSubTaskConfig
-                {
-                    ProjectId = _queueOptions.PublisherA.ProjectId,
-                    TopicId = _queueOptions.PublisherA.TopicId,
-                    SubscriptionId = _queueOptions.PublisherA.SubscriptionId,
-                };
+                var config = new PubSubTaskConfig(
+                    projectId: _queueOptions.PublisherA.ProjectId,
+                    topicId: _queueOptions.PublisherA.TopicId,
+                    subscriptionId: _queueOptions.PublisherA.SubscriptionId);
 
                 var publisherHandle = await _publisherManager.StartPublisherAsync(
                     publisherName: PublisherName,

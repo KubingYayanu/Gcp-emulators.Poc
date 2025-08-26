@@ -6,9 +6,10 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
     {
         Task<SubscriberClient> GetOrCreateSubscriberAsync(
             string subscriberId,
-            string projectId, 
+            string projectId,
             string subscriptionId,
             Func<PubSubPayload, CancellationToken, Task> messageHandler,
+            long? ackDeadlineSeconds = null,
             CancellationToken cancellationToken = default);
     
         Task RemoveSubscriberAsync(

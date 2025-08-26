@@ -13,5 +13,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
         public string? Host => Emulated
             ? null
             : Environment.GetEnvironmentVariable("PUBSUB_EMULATOR_HOST");
+
+        public long SubscriberAckDeadline { get; set; }
     }
 }
