@@ -6,6 +6,6 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.Jobs
     {
         JobType JobType { get; }
 
-        Task HandleStopAsync(IJobService job, CancellationToken cancellationToken);
+        Task StopAsync(CancellationToken cancellationToken);
     }
 }

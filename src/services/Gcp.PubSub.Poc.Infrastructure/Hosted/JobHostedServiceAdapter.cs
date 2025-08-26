@@ -35,7 +35,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.Hosted
             var handler = _stopHandler;
             if (handler != null)
             {
-                return handler.HandleStopAsync(_job, cancellationToken);
+                return handler.StopAsync(cancellationToken);
             }
 
             _logger.LogInformation(

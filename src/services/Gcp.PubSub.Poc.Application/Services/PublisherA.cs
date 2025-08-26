@@ -24,7 +24,7 @@ namespace Gcp.PubSub.Poc.Application.Services
             _logger = logger;
         }
 
-        private string PublisherName => nameof(PublisherA);
+        private string PublisherName => JobType.ToString();
 
         public JobType JobType => JobType.PublisherA;
 
@@ -75,13 +75,6 @@ namespace Gcp.PubSub.Poc.Application.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while running PublisherA job");
-            }
-            finally
-            {
-                // TODO: 由 StopHandler 執行 StopPublisherAsync
-                await _publisherManager.StopPublisherAsync(
-                    publisherName: PublisherName,
-                    cancellationToken: cancellationToken);
             }
         }
     }

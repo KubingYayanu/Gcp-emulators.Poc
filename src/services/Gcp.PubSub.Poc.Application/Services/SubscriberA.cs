@@ -24,7 +24,7 @@ namespace Gcp.PubSub.Poc.Application.Services
             _logger = logger;
         }
 
-        private string SubscriberName => nameof(SubscriberA);
+        private string SubscriberName => JobType.ToString();
 
         public JobType JobType => JobType.SubscriberA;
 

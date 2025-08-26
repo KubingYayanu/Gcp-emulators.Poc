@@ -11,6 +11,7 @@ namespace Gcp.PubSub.Poc.Application.IoC
             IConfiguration configuration)
         {
             SetupJobServices(services);
+            SetupJobHandlers(services);
             SetupJobStopHandlers(services);
 
             return services;
@@ -26,6 +27,10 @@ namespace Gcp.PubSub.Poc.Application.IoC
             {
                 services.AddTransient(typeof(IJobService), type);
             }
+        }
+
+        private static void SetupJobHandlers(IServiceCollection services)
+        {
         }
 
         private static void SetupJobStopHandlers(IServiceCollection services)
