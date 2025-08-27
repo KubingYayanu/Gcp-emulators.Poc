@@ -9,7 +9,8 @@
         "PUBSUB_EMULATOR_HOST": "localhost:8085"
       }
     },
-    "Gcp.PubSub.Poc.PublisherA": {
+    // one to one
+    "Gcp.PubSub.Poc.PublisherOneToOne": {
       "commandLineArgs": "-j 1",
       "commandName": "Project",
       "environmentVariables": {
@@ -17,8 +18,33 @@
         "PUBSUB_EMULATOR_HOST": "localhost:8085"
       }
     },
-    "Gcp.PubSub.Poc.SubscriberA": {
+    "Gcp.PubSub.Poc.SubscriberOneToOne": {
       "commandLineArgs": "-j 2",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+      }
+    },
+    // one to many
+    "Gcp.PubSub.Poc.PublisherOneToMany": {
+      "commandLineArgs": "-j 3",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+      }
+    },
+    "Gcp.PubSub.Poc.SubscriberOneToMany1": {
+      "commandLineArgs": "-j 4",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+      }
+    },
+    "Gcp.PubSub.Poc.SubscriberOneToMany2": {
+      "commandLineArgs": "-j 5",
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local",

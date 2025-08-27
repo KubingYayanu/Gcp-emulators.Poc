@@ -6,18 +6,18 @@ using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Application.Services.OneToOne
+namespace Gcp.PubSub.Poc.Application.Services.OneToMany
 {
-    public class SubscriberOneToOne : IJobService
+    public class SubscriberOneToMany1 : IJobService
     {
         private readonly IPubSubSubscriberManager _subscriberManager;
         private readonly WorkerQueueOptions _queueOptions;
-        private readonly ILogger<SubscriberOneToOne> _logger;
+        private readonly ILogger<SubscriberOneToMany1> _logger;
 
-        public SubscriberOneToOne(
+        public SubscriberOneToMany1(
             IPubSubSubscriberManager subscriberManager,
             IOptions<WorkerQueueOptions> queueOptions,
-            ILogger<SubscriberOneToOne> logger)
+            ILogger<SubscriberOneToMany1> logger)
         {
             _subscriberManager = subscriberManager;
             _queueOptions = queueOptions.Value;
@@ -26,17 +26,17 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToOne
 
         private string SubscriberName => JobType.ToString();
 
-        public JobType JobType => JobType.SubscriberOneToOne;
+        public JobType JobType => JobType.SubscriberOneToMany1;
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
                 var config = new PubSubTaskConfig(
-                    projectId: _queueOptions.SubscriberOneToOne.ProjectId,
-                    topicId: _queueOptions.SubscriberOneToOne.TopicId,
-                    subscriptionId: _queueOptions.SubscriberOneToOne.SubscriptionId,
-                    subscriberAckDeadline: _queueOptions.SubscriberOneToOne.SubscriberAckDeadline);
+                    projectId: _queueOptions.SubscriberOneToMany1.ProjectId,
+                    topicId: _queueOptions.SubscriberOneToMany1.TopicId,
+                    subscriptionId: _queueOptions.SubscriberOneToMany1.SubscriptionId,
+                    subscriberAckDeadline: _queueOptions.SubscriberOneToMany1.SubscriberAckDeadline);
 
                 await _subscriberManager.StartSubscriberAsync<string>(
                     subscriberName: SubscriberName,

@@ -32,7 +32,7 @@ namespace Gcp.PubSub.Poc.Application.Handlers.OneToOne
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while cleaning up PublisherA job");
+                _logger.LogError(ex, "Error occurred while cleaning up {PublisherName} job", PublisherName);
             }
         }
     }

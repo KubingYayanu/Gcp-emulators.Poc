@@ -55,12 +55,11 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToOne
 
                         var extraAttributes = new Dictionary<string, string>
                         {
-                            { "source", "worker" },
-                            { "timestamp", DateTimeOffset.UtcNow.ToString("o") }
+                            { "source", "worker" }
                         };
                         var envelope = new PubSubEnvelope<string>(
                             data: message,
-                            eventType: "order.created",
+                            eventType: "one-to-one.published",
                             schemaVersion: "v1",
                             extraAttributes: extraAttributes);
 
@@ -75,7 +74,7 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToOne
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while running PublisherA job");
+                _logger.LogError(ex, "Error occurred while running {PublisherName} job", PublisherName);
             }
         }
     }
