@@ -86,10 +86,10 @@ graph TD
       S1 --> C1[SubscriberOneToOne]
   end
 
-  %% style P1 fill:#e1f5fe
-  %% style T1 fill:#f3e5f5
-  %% style S1 fill:#e8f5e8
-  %% style C1 fill:#fff3e0
+  style P1 fill:#00bcd4,stroke:#006064,stroke-width:2px,color:#fff
+  style T1 fill:#9c27b0,stroke:#4a148c,stroke-width:2px,color:#fff
+  style S1 fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+  style C1 fill:#ff9800,stroke:#e65100,stroke-width:2px,color:#fff
 ```
 
 ```mermaid
@@ -102,11 +102,11 @@ graph TD
       note2["隨機分配訊息"]
   end
 
-  %% style P2 fill:#e1f5fe
-  %% style T2 fill:#f3e5f5
-  %% style S2 fill:#e8f5e8
-  %% style C2 fill:#fff3e0
-  %% style C3 fill:#fff3e0
+  style P2 fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#fff
+  style T2 fill:#e91e63,stroke:#880e4f,stroke-width:2px,color:#fff
+  style S2 fill:#8bc34a,stroke:#33691e,stroke-width:2px,color:#fff
+  style C2 fill:#ff5722,stroke:#bf360c,stroke-width:2px,color:#fff
+  style C3 fill:#ff5722,stroke:#bf360c,stroke-width:2px,color:#fff
 ```
 
 ```mermaid
@@ -120,12 +120,12 @@ graph TD
         note3["⚠️ Emulator 不支援 filter"]
     end
 
-    %% style P3 fill:#e1f5fe
-    %% style T3 fill:#f3e5f5
-    %% style S3 fill:#e8f5e8
-    %% style S4 fill:#e8f5e8
-    %% style C4 fill:#fff3e0
-    %% style C5 fill:#fff3e0
+    style P3 fill:#673ab7,stroke:#311b92,stroke-width:2px,color:#fff
+    style T3 fill:#f44336,stroke:#b71c1c,stroke-width:2px,color:#fff
+    style S3 fill:#009688,stroke:#004d40,stroke-width:2px,color:#fff
+    style S4 fill:#009688,stroke:#004d40,stroke-width:2px,color:#fff
+    style C4 fill:#ffc107,stroke:#ff6f00,stroke-width:2px,color:#000
+    style C5 fill:#ffc107,stroke:#ff6f00,stroke-width:2px,color:#000
 ```
 
 ## 一對一
