@@ -6,18 +6,18 @@ using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Application.Services
+namespace Gcp.PubSub.Poc.Application.Services.OneToOne
 {
-    public class PublisherA : IJobService
+    public class PublisherOneToOne : IJobService
     {
         private readonly IPubSubPublisherManager _publisherManager;
         private readonly WorkerQueueOptions _queueOptions;
-        private readonly ILogger<PublisherA> _logger;
+        private readonly ILogger<PublisherOneToOne> _logger;
 
-        public PublisherA(
+        public PublisherOneToOne(
             IPubSubPublisherManager publisherManager,
             IOptions<WorkerQueueOptions> queueOptions,
-            ILogger<PublisherA> logger)
+            ILogger<PublisherOneToOne> logger)
         {
             _publisherManager = publisherManager;
             _queueOptions = queueOptions.Value;
@@ -26,16 +26,16 @@ namespace Gcp.PubSub.Poc.Application.Services
 
         private string PublisherName => JobType.ToString();
 
-        public JobType JobType => JobType.PublisherA;
+        public JobType JobType => JobType.PublisherOneToOne;
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
                 var config = new PubSubTaskConfig(
-                    projectId: _queueOptions.PublisherA.ProjectId,
-                    topicId: _queueOptions.PublisherA.TopicId,
-                    subscriptionId: _queueOptions.PublisherA.SubscriptionId);
+                    projectId: _queueOptions.PublisherOneToOne.ProjectId,
+                    topicId: _queueOptions.PublisherOneToOne.TopicId,
+                    subscriptionId: _queueOptions.PublisherOneToOne.SubscriptionId);
 
                 var publisherHandle = await _publisherManager.StartPublisherAsync(
                     publisherName: PublisherName,

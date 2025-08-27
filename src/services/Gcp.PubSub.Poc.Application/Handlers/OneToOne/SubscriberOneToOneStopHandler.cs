@@ -3,16 +3,16 @@ using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber;
 using Gcp.PubSub.Poc.Domain.Enums;
 using Microsoft.Extensions.Logging;
 
-namespace Gcp.PubSub.Poc.Application.Handlers
+namespace Gcp.PubSub.Poc.Application.Handlers.OneToOne
 {
-    public class SubscriberAStopHandler : IJobStopHandler
+    public class SubscriberOneToOneStopHandler : IJobStopHandler
     {
         private readonly IPubSubSubscriberManager _subscriberManager;
-        private readonly ILogger<SubscriberAStopHandler> _logger;
+        private readonly ILogger<SubscriberOneToOneStopHandler> _logger;
 
-        public SubscriberAStopHandler(
+        public SubscriberOneToOneStopHandler(
             IPubSubSubscriberManager subscriberManager,
-            ILogger<SubscriberAStopHandler> logger)
+            ILogger<SubscriberOneToOneStopHandler> logger)
         {
             _subscriberManager = subscriberManager;
             _logger = logger;
@@ -20,7 +20,7 @@ namespace Gcp.PubSub.Poc.Application.Handlers
 
         private string SubscriberName => JobType.ToString();
 
-        public JobType JobType => JobType.SubscriberA;
+        public JobType JobType => JobType.SubscriberOneToOne;
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {

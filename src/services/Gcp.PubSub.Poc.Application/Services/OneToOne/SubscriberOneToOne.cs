@@ -6,18 +6,18 @@ using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Application.Services
+namespace Gcp.PubSub.Poc.Application.Services.OneToOne
 {
-    public class SubscriberA : IJobService
+    public class SubscriberOneToOne : IJobService
     {
         private readonly IPubSubSubscriberManager _subscriberManager;
         private readonly WorkerQueueOptions _queueOptions;
-        private readonly ILogger<SubscriberA> _logger;
+        private readonly ILogger<SubscriberOneToOne> _logger;
 
-        public SubscriberA(
+        public SubscriberOneToOne(
             IPubSubSubscriberManager subscriberManager,
             IOptions<WorkerQueueOptions> queueOptions,
-            ILogger<SubscriberA> logger)
+            ILogger<SubscriberOneToOne> logger)
         {
             _subscriberManager = subscriberManager;
             _queueOptions = queueOptions.Value;
@@ -26,17 +26,17 @@ namespace Gcp.PubSub.Poc.Application.Services
 
         private string SubscriberName => JobType.ToString();
 
-        public JobType JobType => JobType.SubscriberA;
+        public JobType JobType => JobType.SubscriberOneToOne;
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
                 var config = new PubSubTaskConfig(
-                    projectId: _queueOptions.SubscriberA.ProjectId,
-                    topicId: _queueOptions.SubscriberA.TopicId,
-                    subscriptionId: _queueOptions.SubscriberA.SubscriptionId,
-                    subscriberAckDeadline: _queueOptions.SubscriberA.SubscriberAckDeadline);
+                    projectId: _queueOptions.SubscriberOneToOne.ProjectId,
+                    topicId: _queueOptions.SubscriberOneToOne.TopicId,
+                    subscriptionId: _queueOptions.SubscriberOneToOne.SubscriptionId,
+                    subscriberAckDeadline: _queueOptions.SubscriberOneToOne.SubscriberAckDeadline);
 
                 await _subscriberManager.StartSubscriberAsync<string>(
                     subscriberName: SubscriberName,
