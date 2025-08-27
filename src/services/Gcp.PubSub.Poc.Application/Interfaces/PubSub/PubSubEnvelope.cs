@@ -64,6 +64,16 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
         /// </summary>
         public Dictionary<string, string> ExtraAttributes { get; } = new();
 
+        public string GetExtraAttribute(string key, string defaultValue = "")
+        {
+            return ExtraAttributes.GetValueOrDefault(key, defaultValue);
+        }
+
+        public void SetExtraAttribute(string key, string value)
+        {
+            ExtraAttributes[key] = value;
+        }
+
         public PubsubMessage ToPubsubMessage()
         {
             var message = new PubsubMessage

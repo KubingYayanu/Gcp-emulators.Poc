@@ -8,6 +8,10 @@ namespace Gcp.PubSub.Poc.Domain.Enums
         // one to many
         PublisherOneToMany = 3,
         SubscriberOneToMany1 = 4,
-        SubscriberOneToMany2 = 5
+        SubscriberOneToMany2 = 5,
+        // filter by attribute
+        PublisherFilterByAttribute = 6,
+        SubscriberFilterByAttributeDog = 7,
+        SubscriberFilterByAttributeCat = 8
     }
 }

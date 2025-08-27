@@ -6,18 +6,18 @@ using Gcp.PubSub.Poc.Domain.Queues.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Gcp.PubSub.Poc.Application.Services.OneToMany
+namespace Gcp.PubSub.Poc.Application.Services.FilterByAttribute
 {
-    public class PublisherOneToMany : IJobService
+    public class PublisherFilterByAttribute : IJobService
     {
         private readonly IPubSubPublisherManager _publisherManager;
         private readonly WorkerQueueOptions _queueOptions;
-        private readonly ILogger<PublisherOneToMany> _logger;
+        private readonly ILogger<PublisherFilterByAttribute> _logger;
 
-        public PublisherOneToMany(
+        public PublisherFilterByAttribute(
             IPubSubPublisherManager publisherManager,
             IOptions<WorkerQueueOptions> queueOptions,
-            ILogger<PublisherOneToMany> logger)
+            ILogger<PublisherFilterByAttribute> logger)
         {
             _publisherManager = publisherManager;
             _queueOptions = queueOptions.Value;
@@ -26,16 +26,16 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToMany
 
         private string PublisherName => JobType.ToString();
 
-        public JobType JobType => JobType.PublisherOneToMany;
+        public JobType JobType => JobType.PublisherFilterByAttribute;
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
                 var config = new PubSubTaskConfig(
-                    projectId: _queueOptions.PublisherOneToMany.ProjectId,
-                    topicId: _queueOptions.PublisherOneToMany.TopicId,
-                    subscriptionId: _queueOptions.PublisherOneToMany.SubscriptionId);
+                    projectId: _queueOptions.PublisherFilterByAttribute.ProjectId,
+                    topicId: _queueOptions.PublisherFilterByAttribute.TopicId,
+                    subscriptionId: _queueOptions.PublisherFilterByAttribute.SubscriptionId);
 
                 var publisherHandle = await _publisherManager.StartPublisherAsync(
                     publisherName: PublisherName,
@@ -47,11 +47,16 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToMany
                     var message = i.ToString();
                     var extraAttributes = new Dictionary<string, string>
                     {
-                        { "source", "worker" }
+                        { "source", "worker" },
+                        {
+                            "partition_key", i % 2 == 0
+                                ? "dog"
+                                : "cat"
+                        }
                     };
                     var envelope = new PubSubEnvelope<string>(
                         data: message,
-                        eventType: "ono-to-many.published",
+                        eventType: "filter-by-attribute.published",
                         schemaVersion: "v1",
                         extraAttributes: extraAttributes);
 

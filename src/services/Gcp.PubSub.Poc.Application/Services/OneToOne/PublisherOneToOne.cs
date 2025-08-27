@@ -63,12 +63,14 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToOne
                             schemaVersion: "v1",
                             extraAttributes: extraAttributes);
 
-                        await publisherHandle.PublishAsync(
+                        var messageId = await publisherHandle.PublishAsync(
                             message: envelope.ToPubsubMessage());
 
-                        _logger.LogInformation("Published message: {Message}", message);
+                        _logger.LogInformation(
+                            message: "Published message: {Message}, MessageId: {MessageId}", 
+                            args: [message, messageId]);
 
-                        await Task.Delay(300, cancellationToken);
+                        await Task.Delay(100, cancellationToken);
                     }
                 }
             }

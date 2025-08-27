@@ -15,5 +15,12 @@ namespace Gcp.PubSub.Poc.Domain.Queues.Options
         public QueueSection SubscriberOneToMany1 { get; set; }
 
         public QueueSection SubscriberOneToMany2 { get; set; }
+        
+        // filter by attribute
+        public QueueSection PublisherFilterByAttribute { get; set; }
+
+        public QueueSection SubscriberFilterByAttributeDog { get; set; }
+        
+        public QueueSection SubscriberFilterByAttributeCat { get; set; }
     }
 }

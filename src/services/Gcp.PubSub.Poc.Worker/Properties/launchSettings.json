@@ -50,6 +50,31 @@
         "ASPNETCORE_ENVIRONMENT": "Local",
         "PUBSUB_EMULATOR_HOST": "localhost:8085"
       }
+    },
+    // filter by attribute
+    "Gcp.PubSub.Poc.PublisherFilterByAttribute": {
+      "commandLineArgs": "-j 6",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+      }
+    },
+    "Gcp.PubSub.Poc.SubscriberFilterByAttributeDog": {
+      "commandLineArgs": "-j 7",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+      }
+    },
+    "Gcp.PubSub.Poc.SubscriberFilterByAttributeCat": {
+      "commandLineArgs": "-j 8",
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+      }
     }
   }
 }
