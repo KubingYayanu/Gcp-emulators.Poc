@@ -71,3 +71,74 @@ $ curl -s -X POST http://localhost:8085/v1/projects/test-project/subscriptions/t
 #
 $ curl -X POST http://localhost:8085/v1/projects/test-project/subscriptions/test-subscription:35
 ```
+
+# Publisher/Subscriber
+
+## 一對一
+
+- PublisherA
+- SubscriberA
+  - subscription: `one-to-one-sub`
+
+```bash
+# 建立 Topic
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/topics/one-to-one
+
+# 建立 Subscription
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/one-to-one-sub \
+  -H "Content-Type: application/json" \
+  -d '{
+        "topic": "projects/test-project/topics/one-to-one"
+      }'
+```
+
+## 一對多
+
+- PublisherOneToMany
+- SubscriberOneToMany1
+  - subscription: `one-to-many-sub`
+- SubscriberOneToMany2
+  - subscription: `one-to-many-sub`
+- 隨機分配訊息給 Subscriber
+
+```bash
+# 建立 Topic
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/topics/one-to-many
+
+# 建立 Subscription
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/one-to-many-sub \
+  -H "Content-Type: application/json" \
+  -d '{
+        "topic": "projects/test-project/topics/one-to-many"
+      }'
+```
+
+## Filter by attribute
+
+- PublisherFilterByAttribute
+- SubscriberFilterByAttributeDog
+  - subscription: `filter-by-attribute-sub-dog`
+- SubscriberFilterByAttributeCat
+  - subscription: `filter-by-attribute-sub-cat`
+- Pub/Sub Emulator 不支援 filter 功能，導致兩個 Subscriber 都會收到所有訊息
+
+```bash
+# 建立 Topic
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/topics/filter-by-attribute
+
+# 建立 Subscription (filter by attributes.dog)
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/filter-by-attribute-sub-dog \
+  -H "Content-Type: application/json" \
+  -d '{
+        "topic": "projects/test-project/topics/filter-by-attribute",
+        "filter": "attributes.partition_key = \"dog\""
+      }'
+
+# 建立 Subscription (filter by attributes.cat)
+$ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/filter-by-attribute-sub-cat \
+  -H "Content-Type: application/json" \
+  -d '{
+        "topic": "projects/test-project/topics/filter-by-attribute",
+        "filter": "attributes.partition_key = \"cat\""
+      }'
+```
