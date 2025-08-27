@@ -35,6 +35,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
             string publisherId,
             string projectId,
             string topicId,
+            string? orderingKey = null,
             CancellationToken cancellationToken = default)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PubSubPublisherPool));
@@ -56,10 +57,17 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
                 if (!_publishers.TryGetValue(publisherKey, out var publisher))
                 {
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
+
+                    var settings = new PublisherClient.Settings
+                    {
+                        EnableMessageOrdering = !string.IsNullOrWhiteSpace(orderingKey)
+                    };
+
                     var builder = new PublisherClientBuilder
                     {
                         Endpoint = _options.Host,
                         TopicName = topicName,
+                        Settings = settings,
                         EmulatorDetection = EmulatorDetection
                     };
 

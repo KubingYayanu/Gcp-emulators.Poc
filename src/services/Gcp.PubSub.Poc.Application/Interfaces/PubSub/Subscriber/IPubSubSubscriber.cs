@@ -13,9 +13,9 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
         /// </param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IPubSubSubscriberHandle> StartAsync(
+        Task<IPubSubSubscriberHandle> StartAsync<T>(
             PubSubTaskConfig config,
-            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
+            Func<PubSubEnvelope<T>, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default);
     }
 }

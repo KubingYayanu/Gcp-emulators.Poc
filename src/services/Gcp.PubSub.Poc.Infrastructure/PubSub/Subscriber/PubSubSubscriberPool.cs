@@ -35,7 +35,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             string subscriberId,
             string projectId,
             string subscriptionId,
-            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
             long? ackDeadlineSeconds = null,
             CancellationToken cancellationToken = default)
         {
@@ -82,7 +81,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                 _registrations[registrationKey] = new SubscriberRegistration
                 {
                     SubscriberId = subscriberId,
-                    MessageHandler = messageHandler,
                     RegisteredAt = DateTimeOffset.UtcNow
                 };
 

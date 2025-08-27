@@ -27,6 +27,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
                 publisherId: _publisherId,
                 projectId: config.ProjectId,
                 topicId: config.TopicId,
+                orderingKey: config.OrderingKey,
                 cancellationToken: cancellationToken);
 
             _logger.LogInformation(

@@ -8,7 +8,6 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber
             string subscriberId,
             string projectId,
             string subscriptionId,
-            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
             long? ackDeadlineSeconds = null,
             CancellationToken cancellationToken = default);
     

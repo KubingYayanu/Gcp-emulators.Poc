@@ -38,10 +38,10 @@ namespace Gcp.PubSub.Poc.Application.Services
                     subscriptionId: _queueOptions.SubscriberA.SubscriptionId,
                     subscriberAckDeadline: _queueOptions.SubscriberA.SubscriberAckDeadline);
 
-                await _subscriberManager.StartSubscriberAsync(
+                await _subscriberManager.StartSubscriberAsync<string>(
                     subscriberName: SubscriberName,
                     config: config,
-                    messageHandler: (payload, ct) => ProcessMessage(SubscriberName, payload, ct),
+                    messageHandler: ProcessMessage,
                     cancellationToken: cancellationToken);
             }
             catch (Exception ex)
@@ -51,11 +51,12 @@ namespace Gcp.PubSub.Poc.Application.Services
         }
 
         private async Task ProcessMessage(
-            string subscriberName,
-            PubSubSubscriberPayload subscriberPayload,
+            PubSubEnvelope<string> envelope,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[{Subscriber}] Processing: {Message}", subscriberName, subscriberPayload.Message);
+            _logger.LogInformation(
+                message: "[{Subscriber}] Processing: {Message}, MessageId: {MessageId}",
+                args: [SubscriberName, envelope.Data, envelope.MessageId]);
             await Task.Delay(100, cancellationToken);
         }
     }

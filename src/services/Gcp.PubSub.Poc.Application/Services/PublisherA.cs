@@ -65,7 +65,7 @@ namespace Gcp.PubSub.Poc.Application.Services
                             extraAttributes: extraAttributes);
 
                         await publisherHandle.PublishAsync(
-                            payload: envelope.ToPubsubMessage());
+                            message: envelope.ToPubsubMessage());
 
                         _logger.LogInformation("Published message: {Message}", message);
 

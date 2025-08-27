@@ -10,7 +10,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
 
         string TopicId { get; }
 
-        Task<string> PublishAsync(PubsubMessage payload);
+        Task<string> PublishAsync(PubsubMessage message);
 
         Task ShutdownAsync(CancellationToken cancellationToken = default);
     }

@@ -20,9 +20,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             _subscriberId = Guid.NewGuid().ToString("N")[..8];
         }
 
-        public async Task<IPubSubSubscriberHandle> StartAsync(
+        public async Task<IPubSubSubscriberHandle> StartAsync<T>(
             PubSubTaskConfig config,
-            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
+            Func<PubSubEnvelope<T>, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default)
         {
             var projectId = config.ProjectId;
@@ -33,7 +33,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                 subscriberId: _subscriberId,
                 projectId: projectId,
                 subscriptionId: subscriptionId,
-                messageHandler: wrappedHandler,
                 ackDeadlineSeconds: config.SubscriberAckDeadline,
                 cancellationToken: cancellationToken);
 
@@ -42,14 +41,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             {
                 try
                 {
-                    var payload = new PubSubSubscriberPayload
-                    {
-                        MessageId = message.MessageId,
-                        Message = message.Data.ToStringUtf8(),
-                        Attributes = new Dictionary<string, string>(message.Attributes)
-                    };
+                    var envelope = PubSubEnvelopeParser.Parse<T>(message);
 
-                    await wrappedHandler(payload, handlerCancellationToken);
+                    await wrappedHandler(envelope, handlerCancellationToken);
                     return SubscriberClient.Reply.Ack;
                 }
                 catch (Exception ex)
@@ -83,21 +77,22 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                 logger: _logger);
         }
 
-        private Func<PubSubSubscriberPayload, CancellationToken, Task> CreateWrappedHandler(
-            Func<PubSubSubscriberPayload, CancellationToken, Task> originalHandler,
+        private Func<PubSubEnvelope<T>, CancellationToken, Task> CreateWrappedHandler<T>(
+            Func<PubSubEnvelope<T>, CancellationToken, Task> originalHandler,
             PubSubTaskConfig config)
         {
-            return async (payload, cancellationToken) =>
+            return async (envelope, cancellationToken) =>
             {
                 try
                 {
-                    await originalHandler(payload, cancellationToken);
+                    await originalHandler(envelope, cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(
                         exception: ex,
-                        message: "Handler failed for consumer {ConsumerId}, subscription {ProjectId}:{SubscriptionId}",
+                        message: "Handler failed for Subscriber {SubscriberId}, "
+                                 + "ProjectId: {ProjectId}, SubscriptionId: {SubscriptionId}",
                         args:
                         [
                             _subscriberId,

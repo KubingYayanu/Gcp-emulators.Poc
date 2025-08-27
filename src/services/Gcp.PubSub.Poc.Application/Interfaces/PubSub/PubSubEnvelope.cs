@@ -2,7 +2,7 @@ using System.Text.Json;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 
-namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
+namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 {
     public class PubSubEnvelope<T>
     {
@@ -12,6 +12,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
             string schemaVersion = "v1",
             string? traceId = null,
             string? correlationId = null,
+            string? orderingKey = null,
             DateTimeOffset? sentAt = null,
             Dictionary<string, string>? extraAttributes = null)
         {
@@ -21,6 +22,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
             TraceId = traceId ?? Guid.NewGuid().ToString("N");
             CorrelationId = correlationId ?? Guid.NewGuid().ToString("N");
             SentAt = sentAt ?? DateTimeOffset.UtcNow;
+            OrderingKey = orderingKey;
 
             if (extraAttributes == null) return;
 
@@ -29,6 +31,12 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
                 ExtraAttributes.TryAdd(extraAttribute.Key, extraAttribute.Value);
             }
         }
+
+        /// <summary>
+        /// Pub/Sub 訊息唯一識別 (由 Pub/Sub 產生)
+        /// 只有在 Subscriber 收到訊息後才會有值
+        /// </summary>
+        public string MessageId { get; set; }
 
         public T Data { get; }
 
@@ -42,6 +50,18 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
 
         public DateTimeOffset SentAt { get; }
 
+        /// <summary>
+        /// https://chatgpt.com/share/68ae6605-ad00-8013-9cd5-ed0461791a09
+        /// 如果需要某些訊息一定要按照順序處理，就必須使用 ordering_key
+        /// Publisher 端: 可以在 PubsubMessage.OrderingKey 設定一個字串值
+        /// Subscriber 端: 建立 Subscription 時開啟 Message Ordering，同一個 ordering_key 的訊息會依序送達，並且在該 key 未 ack 完成前不會發送下一筆同 key 訊息
+        /// </summary>
+        public string? OrderingKey { get; set; }
+
+        /// <summary>
+        /// 可設定訊息的屬性, 例如: 事件類型、來源等
+        /// 可作為 Subscription 上針對訊息的過濾條件
+        /// </summary>
         public Dictionary<string, string> ExtraAttributes { get; } = new();
 
         public PubsubMessage ToPubsubMessage()
@@ -50,6 +70,11 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
             {
                 Data = ByteString.CopyFromUtf8(JsonSerializer.Serialize(Data))
             };
+
+            if (!string.IsNullOrEmpty(OrderingKey))
+            {
+                message.OrderingKey = OrderingKey;
+            }
 
             // 標準化 Attributes
             message.Attributes["event_type"] = EventType;

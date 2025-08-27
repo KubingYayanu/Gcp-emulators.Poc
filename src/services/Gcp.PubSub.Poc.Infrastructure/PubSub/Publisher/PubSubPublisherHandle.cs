@@ -33,9 +33,9 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
 
         public string TopicId { get; }
 
-        public async Task<string> PublishAsync(PubsubMessage payload)
+        public async Task<string> PublishAsync(PubsubMessage message)
         {
-            var messageId = await _publisher.PublishAsync(payload);
+            var messageId = await _publisher.PublishAsync(message);
             return messageId;
         }
 

@@ -24,10 +24,10 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
 
         public int ActiveSubscriberCount => _subscribers.Count;
 
-        public async Task<IPubSubSubscriberHandle> StartSubscriberAsync(
+        public async Task<IPubSubSubscriberHandle> StartSubscriberAsync<T>(
             string subscriberName,
             PubSubTaskConfig config,
-            Func<PubSubSubscriberPayload, CancellationToken, Task> messageHandler,
+            Func<PubSubEnvelope<T>, CancellationToken, Task> messageHandler,
             CancellationToken cancellationToken = default)
         {
             if (_disposed)

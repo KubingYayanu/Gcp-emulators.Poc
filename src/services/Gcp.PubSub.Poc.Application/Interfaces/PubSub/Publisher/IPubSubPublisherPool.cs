@@ -8,6 +8,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher
             string publisherId,
             string projectId,
             string topicId,
+            string? orderingKey = null,
             CancellationToken cancellationToken = default);
         
         Task RemovePublisherAsync(
