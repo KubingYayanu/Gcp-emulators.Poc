@@ -5,8 +5,7 @@
       "commandLineArgs": "-j 1",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     // one to one
@@ -14,16 +13,14 @@
       "commandLineArgs": "-j 1",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     "Gcp.PubSub.Poc.SubscriberOneToOne": {
       "commandLineArgs": "-j 2",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     // one to many
@@ -31,24 +28,21 @@
       "commandLineArgs": "-j 3",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     "Gcp.PubSub.Poc.SubscriberOneToMany1": {
       "commandLineArgs": "-j 4",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     "Gcp.PubSub.Poc.SubscriberOneToMany2": {
       "commandLineArgs": "-j 5",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     // filter by attribute
@@ -56,24 +50,21 @@
       "commandLineArgs": "-j 6",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     "Gcp.PubSub.Poc.SubscriberFilterByAttributeDog": {
       "commandLineArgs": "-j 7",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     "Gcp.PubSub.Poc.SubscriberFilterByAttributeCat": {
       "commandLineArgs": "-j 8",
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Local",
-        "PUBSUB_EMULATOR_HOST": "localhost:8085"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     }
   }

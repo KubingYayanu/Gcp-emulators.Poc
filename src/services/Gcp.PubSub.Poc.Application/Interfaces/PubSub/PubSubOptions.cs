@@ -6,14 +6,29 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
 
         public bool Emulated { get; set; }
 
-        /// <summary>
-        /// 若是使用 Emulator, 必須設定環境變數 PUBSUB_EMULATOR_HOST
-        /// 否則會報錯
-        /// </summary>
-        public string? Host => Emulated
-            ? null
-            : Environment.GetEnvironmentVariable("PUBSUB_EMULATOR_HOST");
+        private string _emulatorHost;
+
+        public string EmulatorHost
+        {
+            get => _emulatorHost;
+            set
+            {
+                _emulatorHost = value;
+                SetEnvironmentVariable();
+            }
+        }
 
         public long SubscriberAckDeadline { get; set; }
+
+        /// <summary>
+        /// 若是使用 Emulator, 必須設定環境變數 PUBSUB_EMULATOR_HOST
+        /// </summary>
+        private void SetEnvironmentVariable()
+        {
+            Environment.SetEnvironmentVariable("PUBSUB_EMULATOR_HOST",
+                !Emulated
+                    ? null
+                    : EmulatorHost);
+        }
     }
 }

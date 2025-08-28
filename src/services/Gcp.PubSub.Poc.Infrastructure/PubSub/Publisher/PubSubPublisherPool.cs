@@ -65,7 +65,6 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
 
                     var builder = new PublisherClientBuilder
                     {
-                        Endpoint = _options.Host,
                         TopicName = topicName,
                         Settings = settings,
                         EmulatorDetection = EmulatorDetection

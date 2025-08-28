@@ -51,8 +51,7 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToOne
                         {
                             continue;
                         }
-
-
+                        
                         var extraAttributes = new Dictionary<string, string>
                         {
                             { "source", "worker" }
