@@ -133,17 +133,22 @@ graph TD
 **模式說明：** 一個發布者對應一個訂閱者，訊息直接傳遞
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00bcd4', 'primaryTextColor':'#fff', 'primaryBorderColor':'#006064', 'lineColor':'#9c27b0', 'signalColor':'#4caf50', 'signalTextColor':'#e4e7daff', 'sequenceNumberColor':'white', 'actorBkg':'#e3f2fd', 'actorBorder':'#1976d2', 'actorTextColor':'#1976d2'}}}%%
 sequenceDiagram
     participant PA as PublisherOneToOne
     participant T1 as Topic: one-to-one
     participant S1 as Subscription: one-to-one-sub
     participant SA as SubscriberOneToOne
 
-    PA->>T1: 發布訊息
-    T1->>S1: 儲存訊息
-    SA->>S1: 拉取訊息
-    S1->>SA: 返回訊息
+    PA->>+T1: 發布訊息
+    T1->>+S1: 儲存訊息
+    SA->>+S1: 拉取訊息
+    S1->>-SA: 返回訊息
     SA->>S1: 確認訊息 (ACK)
+    deactivate S1
+    deactivate T1
+
+    Note over PA,SA: 一對一訊息傳遞模式
 ```
 
 -   PublisherOneToOne
@@ -167,6 +172,7 @@ $ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/one-t
 **模式說明：** 一個發布者對應多個訂閱者，同一個訂閱共享相同的 Subscription，訊息會隨機分配
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2196f3', 'primaryTextColor':'#fff', 'primaryBorderColor':'#0d47a1', 'lineColor':'#e91e63', 'signalColor':'#8bc34a', 'signalTextColor':'#e4e7daff', 'sequenceNumberColor':'white', 'actorBkg':'#fff3e0', 'actorBorder':'#f57c00', 'actorTextColor':'#e65100'}}}%%
 sequenceDiagram
     participant PM as PublisherOneToMany
     participant T2 as Topic: one-to-many
@@ -174,20 +180,25 @@ sequenceDiagram
     participant SM1 as SubscriberOneToMany1
     participant SM2 as SubscriberOneToMany2
 
-    PM->>T2: 發布訊息A
-    T2->>S2: 儲存訊息A
+    PM->>+T2: 發布訊息A
+    T2->>+S2: 儲存訊息A
     PM->>T2: 發布訊息B
     T2->>S2: 儲存訊息B
 
     par 隨機分配訊息
-        SM1->>S2: 拉取訊息
-        S2->>SM1: 返回訊息A
+        SM1->>+S2: 拉取訊息
+        S2->>-SM1: 返回訊息A
         SM1->>S2: 確認訊息A (ACK)
     and
-        SM2->>S2: 拉取訊息
-        S2->>SM2: 返回訊息B
+        SM2->>+S2: 拉取訊息
+        S2->>-SM2: 返回訊息B
         SM2->>S2: 確認訊息B (ACK)
     end
+    
+    deactivate S2
+    deactivate T2
+
+    Note over PM,SM2: 一對多隨機分配模式
 ```
 
 -   PublisherOneToMany
@@ -214,6 +225,7 @@ $ curl -X PUT http://localhost:8085/v1/projects/test-project/subscriptions/one-t
 **模式說明：** 基於訊息屬性進行過濾，不同的訂閱者只接收符合條件的訊息
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#673ab7', 'primaryTextColor':'#fff', 'primaryBorderColor':'#311b92', 'lineColor':'#f44336', 'signalColor':'#009688', 'signalTextColor':'#e4e7daff', 'sequenceNumberColor':'white', 'actorBkg':'#fff8e1', 'actorBorder':'#ff8f00', 'actorTextColor':'#e65100'}}}%%
 sequenceDiagram
     participant PF as PublisherFilterByAttribute
     participant T3 as Topic: filter-by-attribute
@@ -222,23 +234,27 @@ sequenceDiagram
     participant SFD as SubscriberFilterByAttributeDog
     participant SFC as SubscriberFilterByAttributeCat
 
-    PF->>T3: 發布訊息 (attribute: dog)
-    T3->>SD: 過濾並儲存訊息
+    PF->>+T3: 發布訊息 (attribute: dog)
+    T3->>+SD: 過濾並儲存訊息
     T3-->>SC: 不符合過濾條件 (略過)
 
     PF->>T3: 發布訊息 (attribute: cat)
     T3-->>SD: 不符合過濾條件 (略過)
-    T3->>SC: 過濾並儲存訊息
+    T3->>+SC: 過濾並儲存訊息
 
-    SFD->>SD: 拉取訊息
-    SD->>SFD: 返回 dog 訊息
+    SFD->>+SD: 拉取訊息
+    SD->>-SFD: 返回 dog 訊息
     SFD->>SD: 確認訊息 (ACK)
+    deactivate SD
 
-    SFC->>SC: 拉取訊息
-    SC->>SFC: 返回 cat 訊息
+    SFC->>+SC: 拉取訊息
+    SC->>-SFC: 返回 cat 訊息
     SFC->>SC: 確認訊息 (ACK)
+    deactivate SC
+    deactivate T3
 
     Note over T3: ⚠️ Pub/Sub Emulator 不支援 filter<br/>實際上兩個 Subscriber 都會收到所有訊息
+    Note over PF,SFC: 屬性過濾分發模式
 ```
 
 -   PublisherFilterByAttribute
