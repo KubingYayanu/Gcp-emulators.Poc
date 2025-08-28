@@ -42,17 +42,16 @@ namespace Gcp.PubSub.Poc.Application.Services.FilterByAttribute
                     config: config,
                     cancellationToken: cancellationToken);
 
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     var message = i.ToString();
+                    var partitionKey = i % 2 == 0
+                        ? "dog"
+                        : "cat";
                     var extraAttributes = new Dictionary<string, string>
                     {
                         { "source", "worker" },
-                        {
-                            "partition_key", i % 2 == 0
-                                ? "dog"
-                                : "cat"
-                        }
+                        { "partition_key", partitionKey }
                     };
                     var envelope = new PubSubEnvelope<string>(
                         data: message,
@@ -64,8 +63,8 @@ namespace Gcp.PubSub.Poc.Application.Services.FilterByAttribute
                         message: envelope.ToPubsubMessage());
 
                     _logger.LogInformation(
-                        message: "Published message: {Message}, MessageId: {MessageId}",
-                        args: [message, messageId]);
+                        message: "Published message: {Message}, MessageId: {MessageId}, PartitionKey: {PartitionKey}",
+                        args: [message, messageId, partitionKey]);
 
                     await Task.Delay(100, cancellationToken);
                 }
