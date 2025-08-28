@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Subscriber;
 using Google.Api.Gax;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -64,12 +65,12 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                     {
                         AckDeadline = TimeSpan.FromSeconds(ackDeadline)
                     };
-
                     var builder = new SubscriberClientBuilder
                     {
                         SubscriptionName = subscriptionName,
                         Settings = settings,
-                        EmulatorDetection = EmulatorDetection
+                        EmulatorDetection = EmulatorDetection,
+                        Credential = CreateCredential()
                     };
 
                     subscriber = await builder.BuildAsync(cancellationToken);
@@ -89,6 +90,17 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             {
                 _lock.Release();
             }
+        }
+        
+        private GoogleCredential? CreateCredential()
+        {
+            if (_options.Emulated)
+            {
+                return null;
+            }
+
+            var credential = GoogleCredential.FromJson(_options.Secret);
+            return credential;
         }
 
         public async Task RemoveSubscriberAsync(

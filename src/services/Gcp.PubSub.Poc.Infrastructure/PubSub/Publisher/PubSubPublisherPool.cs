@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub;
 using Gcp.PubSub.Poc.Application.Interfaces.PubSub.Publisher;
 using Google.Api.Gax;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -57,17 +58,16 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
                 if (!_publishers.TryGetValue(publisherKey, out var publisher))
                 {
                     var topicName = TopicName.FromProjectTopic(projectId, topicId);
-
                     var settings = new PublisherClient.Settings
                     {
                         EnableMessageOrdering = !string.IsNullOrWhiteSpace(orderingKey)
                     };
-
                     var builder = new PublisherClientBuilder
                     {
                         TopicName = topicName,
                         Settings = settings,
-                        EmulatorDetection = EmulatorDetection
+                        EmulatorDetection = EmulatorDetection,
+                        Credential = CreateCredential()
                     };
 
                     publisher = await builder.BuildAsync(cancellationToken);
@@ -87,6 +87,17 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
             {
                 _lock.Release();
             }
+        }
+
+        private GoogleCredential? CreateCredential()
+        {
+            if (_options.Emulated)
+            {
+                return null;
+            }
+
+            var credential = GoogleCredential.FromJson(_options.Secret);
+            return credential;
         }
 
         public async Task RemovePublisherAsync(
