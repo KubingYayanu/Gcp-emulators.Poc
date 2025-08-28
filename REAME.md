@@ -13,7 +13,7 @@ $ docker compose -f docker-compose.yaml -p gcp-emulators-poc up -d --build
 
 # Resources 管理
 
--   需要先建立 Topic，並且建立對應的 Subscription，才能進行訊息的發布與拉取
+- 需要先建立 Topic，並且建立對應的 Subscription，才能進行訊息的發布與拉取
 
 ## Topics
 
@@ -81,9 +81,9 @@ $ curl -X POST http://localhost:8085/v1/projects/test-project/subscriptions/test
 ```mermaid
 graph TD
   subgraph "一對一模式"
-      P1[PublisherOneToOne] --> T1[Topic: one-to-one]
-      T1 --> S1[Subscription: one-to-one-sub]
-      S1 --> C1[SubscriberOneToOne]
+    P1[PublisherOneToOne] --> T1[Topic: one-to-one]
+    T1 --> S1[Subscription: one-to-one-sub]
+    S1 --> C1[SubscriberOneToOne]
   end
 
   style P1 fill:#00bcd4,stroke:#006064,stroke-width:2px,color:#fff
@@ -95,11 +95,11 @@ graph TD
 ```mermaid
 graph TD
   subgraph "一對多模式"
-      P2[PublisherOneToMany] --> T2[Topic: one-to-many]
-      T2 --> S2[Subscription: one-to-many-sub]
-      S2 --> C2[SubscriberOneToMany1]
-      S2 --> C3[SubscriberOneToMany2]
-      note2["隨機分配訊息"]
+    P2[PublisherOneToMany] --> T2[Topic: one-to-many]
+    T2 --> S2[Subscription: one-to-many-sub]
+    S2 --> C2[SubscriberOneToMany1]
+    S2 --> C3[SubscriberOneToMany2]
+    note2["隨機分配訊息"]
   end
 
   style P2 fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#fff
@@ -111,21 +111,21 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph "屬性過濾模式"
-        P3[PublisherFilterByAttribute] --> T3[Topic: filter-by-attribute]
-        T3 --> S3[Subscription: filter-by-attribute-sub-dog]
-        T3 --> S4[Subscription: filter-by-attribute-sub-cat]
-        S3 --> C4[SubscriberFilterByAttributeDog]
-        S4 --> C5[SubscriberFilterByAttributeCat]
-        note3["⚠️ Emulator 不支援 filter"]
-    end
+  subgraph "屬性過濾模式"
+    P3[PublisherFilterByAttribute] --> T3[Topic: filter-by-attribute]
+    T3 --> S3[Subscription: filter-by-attribute-sub-dog]
+    T3 --> S4[Subscription: filter-by-attribute-sub-cat]
+    S3 --> C4[SubscriberFilterByAttributeDog]
+    S4 --> C5[SubscriberFilterByAttributeCat]
+    note3["⚠️ Emulator 不支援 filter"]
+  end
 
-    style P3 fill:#673ab7,stroke:#311b92,stroke-width:2px,color:#fff
-    style T3 fill:#f44336,stroke:#b71c1c,stroke-width:2px,color:#fff
-    style S3 fill:#009688,stroke:#004d40,stroke-width:2px,color:#fff
-    style S4 fill:#009688,stroke:#004d40,stroke-width:2px,color:#fff
-    style C4 fill:#ffc107,stroke:#ff6f00,stroke-width:2px,color:#000
-    style C5 fill:#ffc107,stroke:#ff6f00,stroke-width:2px,color:#000
+  style P3 fill:#673ab7,stroke:#311b92,stroke-width:2px,color:#fff
+  style T3 fill:#f44336,stroke:#b71c1c,stroke-width:2px,color:#fff
+  style S3 fill:#009688,stroke:#004d40,stroke-width:2px,color:#fff
+  style S4 fill:#009688,stroke:#004d40,stroke-width:2px,color:#fff
+  style C4 fill:#ffc107,stroke:#ff6f00,stroke-width:2px,color:#000
+  style C5 fill:#ffc107,stroke:#ff6f00,stroke-width:2px,color:#000
 ```
 
 ## 一對一
@@ -151,9 +151,9 @@ sequenceDiagram
     Note over PA,SA: 一對一訊息傳遞模式
 ```
 
--   PublisherOneToOne
--   SubscriberOneToOne
-    -   subscription: `one-to-one-sub`
+- PublisherOneToOne
+- SubscriberOneToOne
+  - subscription: `one-to-one-sub`
 
 ```bash
 # 建立 Topic
@@ -194,19 +194,19 @@ sequenceDiagram
         S2->>-SM2: 返回訊息B
         SM2->>S2: 確認訊息B (ACK)
     end
-    
+
     deactivate S2
     deactivate T2
 
     Note over PM,SM2: 一對多隨機分配模式
 ```
 
--   PublisherOneToMany
--   SubscriberOneToMany1
-    -   subscription: `one-to-many-sub`
--   SubscriberOneToMany2
-    -   subscription: `one-to-many-sub`
--   隨機分配訊息給 Subscriber
+- PublisherOneToMany
+- SubscriberOneToMany1
+  - subscription: `one-to-many-sub`
+- SubscriberOneToMany2
+  - subscription: `one-to-many-sub`
+- 隨機分配訊息給 Subscriber
 
 ```bash
 # 建立 Topic
@@ -257,12 +257,12 @@ sequenceDiagram
     Note over PF,SFC: 屬性過濾分發模式
 ```
 
--   PublisherFilterByAttribute
--   SubscriberFilterByAttributeDog
-    -   subscription: `filter-by-attribute-sub-dog`
--   SubscriberFilterByAttributeCat
-    -   subscription: `filter-by-attribute-sub-cat`
--   Pub/Sub Emulator 不支援 filter 功能，導致兩個 Subscriber 都會收到所有訊息
+- PublisherFilterByAttribute
+- SubscriberFilterByAttributeDog
+  - subscription: `filter-by-attribute-sub-dog`
+- SubscriberFilterByAttributeCat
+  - subscription: `filter-by-attribute-sub-cat`
+- Pub/Sub Emulator 不支援 filter 功能，導致兩個 Subscriber 都會收到所有訊息
 
 ```bash
 # 建立 Topic
