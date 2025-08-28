@@ -8,6 +8,9 @@ namespace Gcp.PubSub.Poc.Domain.Queues.Options
 
         public string SubscriptionId { get; set; }
 
+        /// <summary>
+        /// Min: 10 seconds, Max: 600 seconds
+        /// </summary>
         public long? AckDeadline { get; set; }
     }
 }
