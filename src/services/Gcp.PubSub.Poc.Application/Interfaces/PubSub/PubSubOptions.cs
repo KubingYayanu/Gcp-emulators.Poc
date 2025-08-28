@@ -18,7 +18,7 @@ namespace Gcp.PubSub.Poc.Application.Interfaces.PubSub
             }
         }
 
-        public long SubscriberAckDeadline { get; set; }
+        public long DefaultAckDeadline { get; set; }
 
         /// <summary>
         /// 若是使用 Emulator, 必須設定環境變數 PUBSUB_EMULATOR_HOST

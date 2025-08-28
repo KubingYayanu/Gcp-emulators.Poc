@@ -36,7 +36,7 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToMany
                     projectId: _queueOptions.SubscriberOneToMany2.ProjectId,
                     topicId: _queueOptions.SubscriberOneToMany2.TopicId,
                     subscriptionId: _queueOptions.SubscriberOneToMany2.SubscriptionId,
-                    subscriberAckDeadline: _queueOptions.SubscriberOneToMany2.SubscriberAckDeadline);
+                    subscriberAckDeadline: _queueOptions.SubscriberOneToMany2.AckDeadline);
 
                 await _subscriberManager.StartSubscriberAsync<string>(
                     subscriberName: SubscriberName,

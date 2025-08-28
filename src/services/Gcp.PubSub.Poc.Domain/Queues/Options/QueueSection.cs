@@ -8,6 +8,6 @@ namespace Gcp.PubSub.Poc.Domain.Queues.Options
 
         public string SubscriptionId { get; set; }
 
-        public long? SubscriberAckDeadline { get; set; }
+        public long? AckDeadline { get; set; }
     }
 }

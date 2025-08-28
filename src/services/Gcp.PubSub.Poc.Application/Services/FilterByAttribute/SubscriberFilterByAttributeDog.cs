@@ -36,7 +36,7 @@ namespace Gcp.PubSub.Poc.Application.Services.FilterByAttribute
                     projectId: _queueOptions.SubscriberFilterByAttributeDog.ProjectId,
                     topicId: _queueOptions.SubscriberFilterByAttributeDog.TopicId,
                     subscriptionId: _queueOptions.SubscriberFilterByAttributeDog.SubscriptionId,
-                    subscriberAckDeadline: _queueOptions.SubscriberFilterByAttributeDog.SubscriberAckDeadline);
+                    subscriberAckDeadline: _queueOptions.SubscriberFilterByAttributeDog.AckDeadline);
 
                 await _subscriberManager.StartSubscriberAsync<string>(
                     subscriberName: SubscriberName,

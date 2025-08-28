@@ -59,7 +59,7 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
                     var subscriptionName = SubscriptionName
                         .FromProjectSubscription(projectId, subscriptionId);
 
-                    var ackDeadline = ackDeadlineSeconds ?? _options.SubscriberAckDeadline;
+                    var ackDeadline = ackDeadlineSeconds ?? _options.DefaultAckDeadline;
                     var settings = new SubscriberClient.Settings
                     {
                         AckDeadline = TimeSpan.FromSeconds(ackDeadline)
