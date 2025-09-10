@@ -62,6 +62,8 @@ namespace Gcp.PubSub.Poc.Application.Services.FilterByAttribute
                     var messageId = await publisherHandle.PublishAsync(
                         message: envelope.ToPubsubMessage());
 
+                    envelope.MessageId = messageId;
+                    
                     _logger.LogInformation(
                         message: "Published message: {Message}, MessageId: {MessageId}, PartitionKey: {PartitionKey}",
                         args: [message, messageId, partitionKey]);

@@ -65,6 +65,8 @@ namespace Gcp.PubSub.Poc.Application.Services.OneToOne
                         var messageId = await publisherHandle.PublishAsync(
                             message: envelope.ToPubsubMessage());
 
+                        envelope.MessageId = messageId;
+
                         _logger.LogInformation(
                             message: "Published message: {Message}, MessageId: {MessageId}", 
                             args: [message, messageId]);

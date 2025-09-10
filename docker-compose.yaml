@@ -25,16 +25,16 @@ services:
       dockerfile: infra/gcp-emulators/Dockerfile
     restart: always
     command: >
-      bash -c "gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:8085'"
+      bash -c "gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:${GCP_EMULATORS_PORT}'"
     volumes:
       - gcp-emulators-config:/config
       - gcp-emulators-certs:/certs
     networks:
       default:
     expose:
-      - 8085
+      - ${GCP_EMULATORS_PORT}
     ports:
-      - 8085:8085
+      - ${GCP_EMULATORS_PORT}:${GCP_EMULATORS_PORT}
 
 volumes:
   seq-data:
