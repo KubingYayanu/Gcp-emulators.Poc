@@ -109,6 +109,8 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Subscriber
             string subscriptionId,
             CancellationToken cancellationToken = default)
         {
+            if (_disposed) return;
+
             var subscriberKey = $"{subscriberId}:{projectId}:{subscriptionId}";
             var registrationKey = subscriberKey;
 

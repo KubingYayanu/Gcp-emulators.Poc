@@ -106,6 +106,8 @@ namespace Gcp.PubSub.Poc.Infrastructure.PubSub.Publisher
             string topicId,
             CancellationToken cancellationToken = default)
         {
+            if (_disposed) return;
+
             var publisherKey = $"{publisherId}:{projectId}:{topicId}";
             var registrationKey = publisherKey;
 
