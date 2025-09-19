@@ -25,7 +25,7 @@ namespace Gcp.PubSub.Poc.Application.IoC
                             && !x.IsInterface);
             foreach (var type in jobServiceTypes)
             {
-                services.AddTransient(typeof(IJobService), type);
+                services.AddScoped(typeof(IJobService), type);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Gcp.PubSub.Poc.Application.IoC
                             && !x.IsInterface);
             foreach (var type in jobStopHandlerTypes)
             {
-                services.AddTransient(typeof(IJobStopHandler), type);
+                services.AddScoped(typeof(IJobStopHandler), type);
             }
         }
     }

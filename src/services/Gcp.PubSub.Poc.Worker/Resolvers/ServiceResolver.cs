@@ -26,8 +26,11 @@ namespace Gcp.PubSub.Poc.Worker.Resolvers
                 // 這個 TryAddEnumerable 會忽略重複註冊的 IHostedService (即使是 lambda)
                 _services.AddTransient<IHostedService>(provider =>
                 {
-                    var allJobs = provider.GetServices<IJobService>();
-                    var stopHandlers = provider.GetServices<IJobStopHandler>();
+                    var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+                    var scope = scopeFactory.CreateScope();
+                    
+                    var allJobs = scope.ServiceProvider.GetServices<IJobService>();
+                    var stopHandlers = scope.ServiceProvider.GetServices<IJobStopHandler>();
 
                     var jobInstance = allJobs.FirstOrDefault(x => x.JobType == job);
                     if (jobInstance == null)
