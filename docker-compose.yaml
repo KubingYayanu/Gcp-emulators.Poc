@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     command: >
-      bash -c "gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:${GCP_EMULATORS_PORT}'"
+      bash -c "/config/background.sh & gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:${GCP_EMULATORS_PORT}'"
     volumes:
       - gcp-emulators-config:/config
       - gcp-emulators-certs:/certs

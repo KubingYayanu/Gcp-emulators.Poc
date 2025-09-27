@@ -7,13 +7,7 @@
 
 echo "🚀 啟動 Pub/Sub 初始化程序..."
 
-# 在背景執行初始化腳本
-/config/init-pubsub.sh &
+# 執行初始化腳本
+/config/init-pubsub.sh
 
-# 記錄背景程序的 PID
-INIT_PID=$!
-echo "📝 初始化程序 PID: $INIT_PID"
-
-# 等待背景程序完成（可選）
-wait $INIT_PID
 echo "✅ Pub/Sub 初始化程序已完成"
