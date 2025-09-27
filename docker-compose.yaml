@@ -21,8 +21,8 @@ services:
   gcp-emulators:
     image: gcp-emulators:535.0.0-emulators
     build:
-      context: ./src
-      dockerfile: infra/gcp-emulators/Dockerfile
+      context: ./src/infra/gcp-emulators/
+      dockerfile: Dockerfile
     restart: always
     command: >
       bash -c "gcloud beta emulators pubsub start --project=${PROJECT_ID} --host-port='0.0.0.0:${GCP_EMULATORS_PORT}'"
@@ -31,8 +31,6 @@ services:
       - gcp-emulators-certs:/certs
     networks:
       default:
-    expose:
-      - ${GCP_EMULATORS_PORT}
     ports:
       - ${GCP_EMULATORS_PORT}:${GCP_EMULATORS_PORT}
 

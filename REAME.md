@@ -14,6 +14,7 @@ $ docker compose -f docker-compose.yaml -p gcp-emulators-poc up -d --build
 # Resources 管理
 
 - 需要先建立 Topic，並且建立對應的 Subscription，才能進行訊息的發布與拉取
+- The emulator runs in memory; state is not persisted across runs. If you want to persist state, you will need to use the real Cloud Pub/Sub service.
 
 ## Topics
 
