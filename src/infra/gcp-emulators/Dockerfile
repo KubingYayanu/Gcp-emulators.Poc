@@ -1,4 +1,4 @@
-FROM google/cloud-sdk:535.0.0-emulators
+FROM asia.gcr.io/google.com/cloudsdktool/google-cloud-cli:542.0.0-emulators
 
 COPY background.sh /config/
 COPY init-pubsub.sh /config/
